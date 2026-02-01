@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { UserSchema } from '../../../../users/infrastructure/persistence/typeorm/user-schema.entity';
+import { StatePackageSchema } from './state-package-schema.entity';
 
 /**
  * Schema TypeORM para la tabla packages.
@@ -26,11 +27,15 @@ export class PackageSchema {
   @JoinColumn({ name: 'user_id' })
   owner: UserSchema;
 
+  @Column({ name: 'state_package_id' })
+  statePackageId: string;
+
+  @ManyToOne(() => StatePackageSchema, { eager: true })
+  @JoinColumn({ name: 'state_package_id' })
+  statePackage: StatePackageSchema;
+
   @Column({ name: 'tracking_number', length: 50, unique: true })
   trackingNumber: string;
-
-  @Column({ length: 50, default: 'PENDIENTE' })
-  status: string;
 
   @Column({ length: 255 })
   origin: string;

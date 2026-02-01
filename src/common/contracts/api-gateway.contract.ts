@@ -1,7 +1,3 @@
-/**
- * Contrato para invocación genérica de APIs
- * Patrón invokeEndpointApigateway
- */
 export interface RequestApiGatewayDto {
   host: string;
   path: string;

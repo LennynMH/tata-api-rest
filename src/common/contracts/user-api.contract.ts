@@ -1,6 +1,3 @@
-/**
- * Contrato tipado para respuesta de users-api
- */
 export interface UserApiRole {
   id: string;
   name: string;

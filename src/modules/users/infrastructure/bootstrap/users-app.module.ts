@@ -9,6 +9,7 @@ import { UserSchema } from '../persistence/typeorm/user-schema.entity';
 import { RoleSchema } from '../persistence/typeorm/role-schema.entity';
 import { StateUserSchema } from '../persistence/typeorm/state-user-schema.entity';
 import { PackageSchema } from '../../../packages/infrastructure/persistence/typeorm/package-schema.entity';
+import { StatePackageSchema } from '../../../packages/infrastructure/persistence/typeorm/state-package-schema.entity';
 import { configuration, validationSchema } from '../../../../config/configuration';
 import { LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
 import { LoggerFactoryAdapter } from '../../../../common/adapters/logger/logger-factory.adapter';
@@ -35,7 +36,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
         username: config.get<string>('database.username'),
         password: config.get<string>('database.password'),
         database: config.get<string>('database.database'),
-        entities: [UserSchema, RoleSchema, StateUserSchema, PackageSchema],
+        entities: [UserSchema, RoleSchema, StateUserSchema, PackageSchema, StatePackageSchema],
         migrations: [join(__dirname, '../../../../database/migrations/*.js')],
         migrationsRun: config.get<boolean>('database.migrationsRun'),
         synchronize: false,

@@ -9,6 +9,7 @@ import { UserSchema } from '../../../users/infrastructure/persistence/typeorm/us
 import { RoleSchema } from '../../../users/infrastructure/persistence/typeorm/role-schema.entity';
 import { StateUserSchema } from '../../../users/infrastructure/persistence/typeorm/state-user-schema.entity';
 import { PackageSchema } from '../persistence/typeorm/package-schema.entity';
+import { StatePackageSchema } from '../persistence/typeorm/state-package-schema.entity';
 import { configuration, validationSchema } from '../../../../config/configuration';
 import { DomainExceptionFilter } from '../../../../common/filters/domain-exception.filter';
 
@@ -34,7 +35,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
         username: config.get<string>('database.username'),
         password: config.get<string>('database.password'),
         database: config.get<string>('database.database'),
-        entities: [UserSchema, RoleSchema, StateUserSchema, PackageSchema],
+        entities: [UserSchema, RoleSchema, StateUserSchema, PackageSchema, StatePackageSchema],
         migrationsRun: false,
         synchronize: false,
         logging: config.get<boolean>('database.logging'),

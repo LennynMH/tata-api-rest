@@ -1,8 +1,3 @@
-/**
- * Excepción base de dominio (sin concepto HTTP).
- * El adaptador HTTP (DomainExceptionFilter) traduce code → httpStatus.
- * Reutilizable por varias APIs o protocolos (REST, gRPC, etc.).
- */
 export interface DomainExceptionParams {
   code: string;
   message: string;

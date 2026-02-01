@@ -1,3 +1,5 @@
+import { StatePackage } from './state-package.entity';
+
 /** Datos del propietario del paquete (HU-05) */
 export interface PackageOwner {
   id: string;
@@ -10,7 +12,7 @@ export interface PackageDomain {
   userId: string;
   owner?: PackageOwner;
   trackingNumber: string;
-  status: string;
+  statePackage: StatePackage;
   origin: string;
   destination: string;
   createdAt: Date;
@@ -22,7 +24,7 @@ export class Package implements PackageDomain {
     public readonly id: string,
     public readonly userId: string,
     public readonly trackingNumber: string,
-    public readonly status: string,
+    public readonly statePackage: StatePackage,
     public readonly origin: string,
     public readonly destination: string,
     public readonly createdAt: Date,
@@ -34,7 +36,7 @@ export class Package implements PackageDomain {
     id: string,
     userId: string,
     trackingNumber: string,
-    status: string,
+    statePackage: StatePackage,
     origin: string,
     destination: string,
   ): Package {
@@ -43,11 +45,25 @@ export class Package implements PackageDomain {
       id,
       userId,
       trackingNumber,
-      status,
+      statePackage,
       origin,
       destination,
       now,
       now,
+    );
+  }
+
+  withState(newState: StatePackage): Package {
+    return new Package(
+      this.id,
+      this.userId,
+      this.trackingNumber,
+      newState,
+      this.origin,
+      this.destination,
+      this.createdAt,
+      new Date(), // updatedAt actualizado
+      this.owner,
     );
   }
 }

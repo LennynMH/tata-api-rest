@@ -2,10 +2,6 @@ import { Injectable } from '@nestjs/common';
 import axios, { AxiosRequestConfig } from 'axios';
 import { IApiGateway, RequestApiGatewayDto } from '../contracts/api-gateway.contract';
 
-/**
- * Adaptador genérico para invocar APIs externas
- * Implementa invokeEndpointApigateway (patrón ApiGateway)
- */
 @Injectable()
 export class ApiGatewayAdapter implements IApiGateway {
   async invokeEndpoint<R>(request: RequestApiGatewayDto): Promise<R> {

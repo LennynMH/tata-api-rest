@@ -1,6 +1,3 @@
-/**
- * Códigos de rol para la tabla roles
- */
 export const ROLE_CODE_ADM = 'ADM' as const;
 export const ROLE_CODE_USU = 'USU' as const;
 

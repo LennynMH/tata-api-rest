@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsIn, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
-import { PACKAGE_STATUSES } from '../../../../../../common/constants/package.constants';
+import { STATE_PACKAGE_CODES } from '../../../../../../common/constants/state-package.constants';
 
 export class CreatePackageDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -22,9 +22,9 @@ export class CreatePackageDto {
   @IsNotEmpty()
   destination: string;
 
-  @ApiPropertyOptional({ example: 'PENDIENTE', enum: PACKAGE_STATUSES })
+  @ApiPropertyOptional({ example: 'pendiente', enum: STATE_PACKAGE_CODES, description: 'Estado inicial (default: pendiente)' })
   @IsOptional()
   @IsString()
-  @IsIn(PACKAGE_STATUSES)
+  @IsIn(STATE_PACKAGE_CODES)
   status?: string;
 }

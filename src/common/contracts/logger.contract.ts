@@ -1,7 +1,3 @@
-/**
- * Contrato para logging - puerto de aplicación
- * Permite cambiar implementación sin afectar use cases
- */
 export const LOGGER_FACTORY = Symbol('LOGGER_FACTORY');
 
 export interface ILogger {

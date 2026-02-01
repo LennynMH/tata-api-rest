@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IPackageRepository } from '../../../application/ports/package.repository.port';
 import { Package, PackageOwner } from '../../../domain/entities/package.entity';
+import { StatePackage } from '../../../domain/entities/state-package.entity';
 import { PackageSchema } from './package-schema.entity';
+import { StatePackageSchema } from './state-package-schema.entity';
 
 @Injectable()
 export class TypeOrmPackageRepository implements IPackageRepository {
@@ -15,7 +17,18 @@ export class TypeOrmPackageRepository implements IPackageRepository {
   async save(pkg: Package): Promise<Package> {
     const schema = this.toSchema(pkg);
     const saved = await this.repo.save(schema);
-    return this.toDomain(saved);
+    // Recargar con relaciones
+    const reloaded = await this.repo.findOne({ where: { id: saved.id } });
+    return this.toDomain(reloaded!);
+  }
+
+  async update(pkg: Package): Promise<Package> {
+    await this.repo.update(pkg.id, {
+      statePackageId: pkg.statePackage.id,
+      updatedAt: pkg.updatedAt,
+    });
+    const updated = await this.repo.findOne({ where: { id: pkg.id } });
+    return this.toDomain(updated!);
   }
 
   async findById(id: string): Promise<Package | null> {
@@ -30,7 +43,7 @@ export class TypeOrmPackageRepository implements IPackageRepository {
   async findByIdWithOwner(id: string): Promise<Package | null> {
     const schema = await this.repo.findOne({
       where: { id },
-      relations: ['owner'],
+      relations: ['owner', 'statePackage'],
     });
     return schema ? this.toDomainWithOwner(schema) : null;
   }
@@ -50,7 +63,8 @@ export class TypeOrmPackageRepository implements IPackageRepository {
     schema.id = pkg.id;
     schema.userId = pkg.userId;
     schema.trackingNumber = pkg.trackingNumber;
-    schema.status = pkg.status;
+    schema.statePackageId = pkg.statePackage.id;
+    schema.statePackage = { id: pkg.statePackage.id } as StatePackageSchema;
     schema.origin = pkg.origin;
     schema.destination = pkg.destination;
     schema.createdAt = pkg.createdAt;
@@ -58,12 +72,16 @@ export class TypeOrmPackageRepository implements IPackageRepository {
     return schema;
   }
 
+  private toStatePackage(schema: StatePackageSchema): StatePackage {
+    return StatePackage.create(schema.id, schema.codigo, schema.descripcion, schema.orden);
+  }
+
   private toDomain(schema: PackageSchema): Package {
     return new Package(
       schema.id,
       schema.userId,
       schema.trackingNumber,
-      schema.status,
+      this.toStatePackage(schema.statePackage),
       schema.origin,
       schema.destination,
       schema.createdAt,
@@ -86,7 +104,7 @@ export class TypeOrmPackageRepository implements IPackageRepository {
       schema.id,
       schema.userId,
       schema.trackingNumber,
-      schema.status,
+      this.toStatePackage(schema.statePackage),
       schema.origin,
       schema.destination,
       schema.createdAt,

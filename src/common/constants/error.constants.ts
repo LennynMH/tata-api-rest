@@ -64,10 +64,12 @@ export const PAQUETE_TRACKING_DUPLICADO = {
   httpStatus: 409,
 } as const;
 
-/**
- * Mapeo código de error (dominio) → status HTTP.
- * Usado por DomainExceptionFilter; centralizado para todas las APIs.
- */
+export const ESTADO_PAQUETE_INVALIDO = {
+  code: 'PKG003',
+  message: 'Estado de paquete inválido. Códigos válidos: pendiente, en_tránsito, entregado',
+  httpStatus: 400,
+} as const;
+
 export const ERROR_CODE_TO_HTTP_STATUS: Record<string, number> = {
   [ERROR_GENERICO.code]: ERROR_GENERICO.httpStatus,
   [ERROR_VALIDAR_DATOS.code]: ERROR_VALIDAR_DATOS.httpStatus,
@@ -79,4 +81,5 @@ export const ERROR_CODE_TO_HTTP_STATUS: Record<string, number> = {
   [ESTADO_USUARIO_NO_ENCONTRADO.code]: ESTADO_USUARIO_NO_ENCONTRADO.httpStatus,
   [PAQUETE_NO_ENCONTRADO.code]: PAQUETE_NO_ENCONTRADO.httpStatus,
   [PAQUETE_TRACKING_DUPLICADO.code]: PAQUETE_TRACKING_DUPLICADO.httpStatus,
+  [ESTADO_PAQUETE_INVALIDO.code]: ESTADO_PAQUETE_INVALIDO.httpStatus,
 };

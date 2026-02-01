@@ -18,7 +18,14 @@ export class PackageResponseDto {
   @ApiProperty()
   tracking_number: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Estado del paquete (HU-06)' })
+  state: {
+    id: string;
+    codigo: string;
+    descripcion: string;
+  };
+
+  @ApiProperty({ description: 'Código del estado (alias para compatibilidad)' })
   status: string;
 
   @ApiProperty()
@@ -39,7 +46,12 @@ export class PackageResponseDto {
       user_id: pkg.userId,
       owner: pkg.owner ? { id: pkg.owner.id, email: pkg.owner.email, name: pkg.owner.name } : undefined,
       tracking_number: pkg.trackingNumber,
-      status: pkg.status,
+      state: {
+        id: pkg.statePackage.id,
+        codigo: pkg.statePackage.code,
+        descripcion: pkg.statePackage.description,
+      },
+      status: pkg.statePackage.code,
       origin: pkg.origin,
       destination: pkg.destination,
       createdAt: pkg.createdAt,

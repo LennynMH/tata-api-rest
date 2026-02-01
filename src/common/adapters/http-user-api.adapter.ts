@@ -4,10 +4,6 @@ import { IApiGateway, API_GATEWAY } from '../contracts/api-gateway.contract';
 import { IUserFinder, UserFinderResult } from '../contracts/user-finder.contract';
 import { UserApiResponse } from '../contracts/user-api.contract';
 
-/**
- * Adaptador HTTP que implementa IUserFinder llamando a users-api.
- * Usado por packages-api cuando corre como aplicación separada.
- */
 @Injectable()
 export class HttpUserApiAdapter implements IUserFinder {
   constructor(

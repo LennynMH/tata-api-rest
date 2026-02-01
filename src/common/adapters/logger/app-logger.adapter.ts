@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ILogger } from '../../contracts/logger.contract';
 
-/**
- * Adaptador de logger con formato enriquecido (timestamp, level, request ID).
- * Inspirado en CustomLoggerSupport: trazabilidad y nivel explícito.
- */
 @Injectable()
 export class AppLoggerAdapter implements ILogger {
   constructor(private readonly context: string) {}

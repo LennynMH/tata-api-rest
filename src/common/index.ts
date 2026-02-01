@@ -1,6 +1,6 @@
 export * from './constants/error.constants';
 export * from './constants/role.constants';
-export * from './constants/package.constants';
+export * from './constants/state-package.constants';
 export * from './contracts/password-hasher.contract';
 export * from './contracts/api-gateway.contract';
 export * from './contracts/user-api.contract';

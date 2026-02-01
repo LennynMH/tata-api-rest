@@ -2,11 +2,13 @@ import { Injectable, Inject } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { IUserFinder, USER_FINDER } from '../../../../common/contracts/user-finder.contract';
 import { IPackageRepository, PACKAGE_REPOSITORY } from '../ports/package.repository.port';
+import { IStatePackageRepository, STATE_PACKAGE_REPOSITORY } from '../ports/state-package.repository.port';
 import { Package } from '../../domain/entities/package.entity';
 import { UserNotFoundException } from '../../../../common/exceptions/user-not-found.exception';
 import { PackageTrackingDuplicateException } from '../../../../common/exceptions/package-tracking-duplicate.exception';
+import { InvalidStatePackageException } from '../../../../common/exceptions/invalid-state-package.exception';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
-import { PACKAGE_STATUS_DEFAULT } from '../../../../common/constants/package.constants';
+import { STATE_PACKAGE_CODE_DEFAULT } from '../../../../common/constants/state-package.constants';
 
 export interface CreatePackageInput {
   userId: string;
@@ -25,6 +27,8 @@ export class CreatePackageUseCase {
     private readonly userFinder: IUserFinder,
     @Inject(PACKAGE_REPOSITORY)
     private readonly packageRepository: IPackageRepository,
+    @Inject(STATE_PACKAGE_REPOSITORY)
+    private readonly statePackageRepository: IStatePackageRepository,
     @Inject(LOGGER_FACTORY)
     private readonly loggerFactory: ILoggerFactory,
   ) {
@@ -44,13 +48,17 @@ export class CreatePackageUseCase {
       throw new PackageTrackingDuplicateException(input.trackingNumber);
     }
 
-    const status = input.status ?? PACKAGE_STATUS_DEFAULT;
+    const statusCode = input.status ?? STATE_PACKAGE_CODE_DEFAULT;
+    const statePackage = await this.statePackageRepository.findByCode(statusCode);
+    if (!statePackage) {
+      throw new InvalidStatePackageException(statusCode);
+    }
 
     const pkg = Package.create(
       randomUUID(),
       input.userId,
       input.trackingNumber.trim(),
-      status,
+      statePackage,
       input.origin.trim(),
       input.destination.trim(),
     );

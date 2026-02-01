@@ -5,3 +5,4 @@ export { UserNotFoundException } from './user-not-found.exception';
 export { StateUserNotFoundException } from './state-user-not-found.exception';
 export { PackageNotFoundException } from './package-not-found.exception';
 export { PackageTrackingDuplicateException } from './package-tracking-duplicate.exception';
+export { InvalidStatePackageException } from './invalid-state-package.exception';
