@@ -44,3 +44,39 @@ export const USUARIO_NO_ENCONTRADO = {
   message: 'Usuario no encontrado',
   httpStatus: 404,
 } as const;
+
+export const ESTADO_USUARIO_NO_ENCONTRADO = {
+  code: 'USR004',
+  message: 'Estado de usuario no encontrado',
+  httpStatus: 500,
+} as const;
+
+// Errores específicos de paquetes
+export const PAQUETE_NO_ENCONTRADO = {
+  code: 'PKG001',
+  message: 'Paquete no encontrado',
+  httpStatus: 404,
+} as const;
+
+export const PAQUETE_TRACKING_DUPLICADO = {
+  code: 'PKG002',
+  message: 'Ya existe un paquete con el número de seguimiento proporcionado',
+  httpStatus: 409,
+} as const;
+
+/**
+ * Mapeo código de error (dominio) → status HTTP.
+ * Usado por DomainExceptionFilter; centralizado para todas las APIs.
+ */
+export const ERROR_CODE_TO_HTTP_STATUS: Record<string, number> = {
+  [ERROR_GENERICO.code]: ERROR_GENERICO.httpStatus,
+  [ERROR_VALIDAR_DATOS.code]: ERROR_VALIDAR_DATOS.httpStatus,
+  [RECURSO_NO_ENCONTRADO.code]: RECURSO_NO_ENCONTRADO.httpStatus,
+  [REGLAS_DE_NEGOCIO.code]: REGLAS_DE_NEGOCIO.httpStatus,
+  [USUARIO_EMAIL_DUPLICADO.code]: USUARIO_EMAIL_DUPLICADO.httpStatus,
+  [ROL_INVALIDO.code]: ROL_INVALIDO.httpStatus,
+  [USUARIO_NO_ENCONTRADO.code]: USUARIO_NO_ENCONTRADO.httpStatus,
+  [ESTADO_USUARIO_NO_ENCONTRADO.code]: ESTADO_USUARIO_NO_ENCONTRADO.httpStatus,
+  [PAQUETE_NO_ENCONTRADO.code]: PAQUETE_NO_ENCONTRADO.httpStatus,
+  [PAQUETE_TRACKING_DUPLICADO.code]: PAQUETE_TRACKING_DUPLICADO.httpStatus,
+};

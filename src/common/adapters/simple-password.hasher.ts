@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IPasswordHasher } from '../../contracts/password-hasher.contract';
+import { IPasswordHasher } from '../contracts/password-hasher.contract';
 
 /**
  * Adaptador simple para desarrollo

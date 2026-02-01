@@ -6,7 +6,6 @@ export class UserNotFoundException extends DomainException {
     super({
       code: USUARIO_NO_ENCONTRADO.code,
       message: `${USUARIO_NO_ENCONTRADO.message} con id '${userId}'`,
-      httpStatus: USUARIO_NO_ENCONTRADO.httpStatus,
       details: [userId],
     });
     this.name = 'UserNotFoundException';

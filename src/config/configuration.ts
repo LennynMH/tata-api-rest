@@ -60,6 +60,9 @@ export const configuration = () => ({
   health: {
     dbTimeoutMs: parseInt(process.env.HEALTH_DB_TIMEOUT_MS ?? '1500', 10),
   },
+
+  // Microservicios - URL de users-api (para packages-api)
+  usersApiUrl: process.env.USERS_API_URL ?? 'http://localhost:2001',
 });
 
 export const validationSchema = Joi.object({
@@ -83,4 +86,5 @@ export const validationSchema = Joi.object({
 
   RUN_MIGRATIONS: Joi.string().valid('true', 'false').default('false'),
   HEALTH_DB_TIMEOUT_MS: Joi.number().default(1500),
+  USERS_API_URL: Joi.string().uri().default('http://localhost:2001'),
 });

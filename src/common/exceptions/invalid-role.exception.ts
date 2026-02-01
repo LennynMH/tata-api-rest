@@ -6,7 +6,6 @@ export class InvalidRoleException extends DomainException {
     super({
       code: ROL_INVALIDO.code,
       message: `Rol con código '${roleCode}' no existe. ${ROL_INVALIDO.message}`,
-      httpStatus: ROL_INVALIDO.httpStatus,
       details: [roleCode],
     });
     this.name = 'InvalidRoleException';

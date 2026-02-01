@@ -6,7 +6,6 @@ export class UserAlreadyExistsException extends DomainException {
     super({
       code: USUARIO_EMAIL_DUPLICADO.code,
       message: `${USUARIO_EMAIL_DUPLICADO.message}: ${email}`,
-      httpStatus: USUARIO_EMAIL_DUPLICADO.httpStatus,
       details: [email],
     });
     this.name = 'UserAlreadyExistsException';

@@ -4,5 +4,26 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
-  }
+  },
+  "projects": {
+    "users-api": {
+      "type": "application",
+      "root": "src/modules/users",
+      "entryFile": "infrastructure/bootstrap/main",
+      "sourceRoot": "src/modules/users",
+      "compilerOptions": {
+        "tsConfigPath": "src/modules/users/tsconfig.app.json"
+      }
+    },
+    "packages-api": {
+      "type": "application",
+      "root": "src/modules/packages",
+      "entryFile": "infrastructure/bootstrap/main",
+      "sourceRoot": "src/modules/packages",
+      "compilerOptions": {
+        "tsConfigPath": "src/modules/packages/tsconfig.app.json"
+      }
+    }
+  },
+  "monorepo": true
 }

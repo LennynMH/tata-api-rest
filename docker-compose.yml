@@ -1,3 +1,7 @@
+# Arquitectura hexagonal – microservicio modular
+# Cada módulo tiene su Dockerfile y su propio contenedor.
+# Build context: raíz del repo (.) para ambos servicios.
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -17,18 +21,18 @@ services:
       timeout: 5s
       retries: 5
 
-  api:
+  users-api:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: logistics_api
+      dockerfile: src/modules/users/Dockerfile
+    container_name: logistics_users_api
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      PORT: 2000
+      PORT: 2001
       API_PREFIX: api
       SWAGGER_ENABLED: 'true'
       SWAGGER_PATH: api/docs
@@ -40,7 +44,41 @@ services:
       RUN_MIGRATIONS: 'true'
       HEALTH_DB_TIMEOUT_MS: 1500
     ports:
-      - '2000:2000'
+      - '2001:2001'
+    healthcheck:
+      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:2001/api/health/live', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
+  packages-api:
+    build:
+      context: .
+      dockerfile: src/modules/packages/Dockerfile
+    container_name: logistics_packages_api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users-api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 2002
+      API_PREFIX: api
+      SWAGGER_ENABLED: 'true'
+      SWAGGER_PATH: api/docs
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: logistics_db
+      RUN_MIGRATIONS: 'false'
+      HEALTH_DB_TIMEOUT_MS: 1500
+      USERS_API_URL: http://users-api:2001
+    ports:
+      - '2002:2002'
 
 volumes:
   postgres_data:

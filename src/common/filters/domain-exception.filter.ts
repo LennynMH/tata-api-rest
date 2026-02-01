@@ -3,15 +3,23 @@ import {
   Catch,
   ArgumentsHost,
   HttpStatus,
-  Logger,
+  Inject,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { DomainException } from '../exceptions/domain.exception';
-import { ERROR_GENERICO } from '../constants/error.constants';
+import { ERROR_GENERICO, ERROR_CODE_TO_HTTP_STATUS } from '../constants/error.constants';
+import { ILoggerFactory, LOGGER_FACTORY } from '../contracts/logger.contract';
 
 @Catch()
 export class DomainExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(DomainExceptionFilter.name);
+  private readonly logger: ReturnType<ILoggerFactory['create']>;
+
+  constructor(
+    @Inject(LOGGER_FACTORY)
+    private readonly loggerFactory: ILoggerFactory,
+  ) {
+    this.logger = loggerFactory.create(DomainExceptionFilter.name);
+  }
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -21,8 +29,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
       this.logger.warn(
         `DomainException [${exception.code}]: ${exception.message}`,
       );
-      response.status(exception.httpStatus).json({
-        statusCode: exception.httpStatus,
+      const httpStatus =
+        ERROR_CODE_TO_HTTP_STATUS[exception.code] ?? ERROR_GENERICO.httpStatus;
+      response.status(httpStatus).json({
+        statusCode: httpStatus,
         code: exception.code,
         message: exception.message,
         details: exception.details.length > 0 ? exception.details : undefined,
