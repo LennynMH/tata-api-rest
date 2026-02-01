@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
 import { HealthController } from './health.controller';
 
+/**
+ * Módulo de health sin TypeORM (sin verificación de BD).
+ * Usar en tracking-api o cualquier servicio que no use TypeORM.
+ */
 @Module({
-  imports: [TerminusModule],
   controllers: [HealthController],
 })
 export class HealthModule {}

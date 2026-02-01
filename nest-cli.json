@@ -23,6 +23,15 @@
       "compilerOptions": {
         "tsConfigPath": "src/modules/packages/tsconfig.app.json"
       }
+    },
+    "tracking-api": {
+      "type": "application",
+      "root": "src/modules/tracking",
+      "entryFile": "infrastructure/bootstrap/main",
+      "sourceRoot": "src/modules/tracking",
+      "compilerOptions": {
+        "tsConfigPath": "src/modules/tracking/tsconfig.app.json"
+      }
     }
   },
   "monorepo": true

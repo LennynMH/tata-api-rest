@@ -28,6 +28,10 @@ export interface HealthConfig {
   dbTimeoutMs: number;
 }
 
+export interface MongoConfig {
+  uri: string;
+}
+
 export const configuration = () => ({
   // Server
   port: parseInt(process.env.PORT ?? '2000', 10),
@@ -61,8 +65,16 @@ export const configuration = () => ({
     dbTimeoutMs: parseInt(process.env.HEALTH_DB_TIMEOUT_MS ?? '1500', 10),
   },
 
-  // Microservicios - URL de users-api (para packages-api)
+  // Microservicios - URLs de APIs
   usersApiUrl: process.env.USERS_API_URL ?? 'http://localhost:2001',
+  packagesApiUrl: process.env.PACKAGES_API_URL ?? 'http://localhost:2002',
+
+  // MongoDB (para tracking-api)
+  mongo: {
+    uri:
+      process.env.MONGO_URI ??
+      'mongodb://admin:admin123@localhost:27017/tracking_db?authSource=admin',
+  },
 });
 
 export const validationSchema = Joi.object({
@@ -87,4 +99,8 @@ export const validationSchema = Joi.object({
   RUN_MIGRATIONS: Joi.string().valid('true', 'false').default('false'),
   HEALTH_DB_TIMEOUT_MS: Joi.number().default(1500),
   USERS_API_URL: Joi.string().uri().default('http://localhost:2001'),
+  PACKAGES_API_URL: Joi.string().uri().default('http://localhost:2002'),
+  MONGO_URI: Joi.string().default(
+    'mongodb://admin:admin123@localhost:27017/tracking_db?authSource=admin',
+  ),
 });

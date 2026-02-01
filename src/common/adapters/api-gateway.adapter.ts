@@ -21,8 +21,11 @@ export class ApiGatewayAdapter implements IApiGateway {
     const response = await axios(config);
 
     if (response.status >= 400) {
-      const err = response.data as { message?: string };
-      throw new Error(err?.message ?? `HTTP ${response.status}: ${url}`);
+      const err = new Error(
+        (response.data as { message?: string })?.message ?? `HTTP ${response.status}: ${url}`,
+      ) as Error & { status?: number };
+      err.status = response.status;
+      throw err;
     }
 
     return response.data as R;

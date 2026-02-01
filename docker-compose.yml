@@ -1,8 +1,15 @@
 # Arquitectura hexagonal – microservicio modular
 # Cada módulo tiene su Dockerfile y su propio contenedor.
 # Build context: raíz del repo (.) para ambos servicios.
+#
+# Bases de datos:
+# - PostgreSQL (SQL): usuarios, paquetes (HU-01 a HU-06)
+# - MongoDB (NoSQL): seguimiento de paquetes (HU-07, HU-08)
 
 services:
+  # ============================================
+  # BASES DE DATOS
+  # ============================================
   postgres:
     image: postgres:16-alpine
     container_name: logistics_postgres
@@ -21,6 +28,28 @@ services:
       timeout: 5s
       retries: 5
 
+  mongodb:
+    image: mongo:7-jammy
+    container_name: logistics_mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: tracking_db
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ============================================
+  # MICROSERVICIOS
+  # ============================================
   users-api:
     build:
       context: .
@@ -80,5 +109,36 @@ services:
     ports:
       - '2002:2002'
 
+  tracking-api:
+    build:
+      context: .
+      dockerfile: src/modules/tracking/Dockerfile
+    container_name: logistics_tracking_api
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      packages-api:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      PORT: 2003
+      API_PREFIX: api
+      SWAGGER_ENABLED: 'true'
+      SWAGGER_PATH: api/docs
+      SWAGGER_TITLE: 'API Tracking - Seguimiento de Paquetes'
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017/tracking_db?authSource=admin
+      PACKAGES_API_URL: http://packages-api:2002
+      HEALTH_DB_TIMEOUT_MS: 1500
+    ports:
+      - '2003:2003'
+    healthcheck:
+      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:2003/api/health/live', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 20s
+
 volumes:
   postgres_data:
+  mongodb_data:

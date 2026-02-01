@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER } from '@nestjs/core';
 import { PackagesModule } from '../../packages.module';
-import { HealthModule } from '../../../../common/health/health.module';
+import { HealthTypeormModule } from '../../../../common/health/health.typeorm.module';
 import { SharedInfraModule } from '../../../../common/infrastructure/shared-infra.module';
 import { UserSchema } from '../../../users/infrastructure/persistence/typeorm/user-schema.entity';
 import { RoleSchema } from '../../../users/infrastructure/persistence/typeorm/role-schema.entity';
@@ -44,7 +44,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
     }),
     SharedInfraModule,
     PackagesModule,
-    HealthModule,
+    HealthTypeormModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: DomainExceptionFilter },

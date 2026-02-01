@@ -1,0 +1,17 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/tracking-api",
+    "declaration": false,
+    "noEmit": false
+  },
+  "include": [
+    "**/*.ts",
+    "../../common/**/*.ts",
+    "../../config/**/*.ts"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}

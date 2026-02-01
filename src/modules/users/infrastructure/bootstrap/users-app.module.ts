@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER } from '@nestjs/core';
 import { join } from 'path';
 import { UsersModule } from '../../users.module';
-import { HealthModule } from '../../../../common/health/health.module';
+import { HealthTypeormModule } from '../../../../common/health/health.typeorm.module';
 import { UserSchema } from '../persistence/typeorm/user-schema.entity';
 import { RoleSchema } from '../persistence/typeorm/role-schema.entity';
 import { StateUserSchema } from '../persistence/typeorm/state-user-schema.entity';
@@ -45,7 +45,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
       inject: [ConfigService],
     }),
     UsersModule,
-    HealthModule,
+    HealthTypeormModule,
   ],
   providers: [
     { provide: LOGGER_FACTORY, useClass: LoggerFactoryAdapter },
