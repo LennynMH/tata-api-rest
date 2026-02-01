@@ -9,25 +9,20 @@ import { RoleSchema } from './role-schema.entity';
 export class TypeOrmRoleRepository implements IRoleRepository {
   constructor(
     @InjectRepository(RoleSchema)
-    private readonly repository: Repository<RoleSchema>,
+    private readonly repo: Repository<RoleSchema>,
   ) {}
 
-  async findById(id: string): Promise<Role | null> {
-    const schema = await this.repository.findOne({ where: { id } });
-    return schema ? this.toDomain(schema) : null;
-  }
-
-  async findByName(name: string): Promise<Role | null> {
-    const schema = await this.repository.findOne({ where: { name } });
-    return schema ? this.toDomain(schema) : null;
-  }
-
   async findByCode(code: string): Promise<Role | null> {
-    const schema = await this.repository.findOne({ where: { code } });
+    const schema = await this.repo.findOne({ where: { code } });
+    return schema ? this.toDomain(schema) : null;
+  }
+
+  async findById(id: string): Promise<Role | null> {
+    const schema = await this.repo.findOne({ where: { id } });
     return schema ? this.toDomain(schema) : null;
   }
 
   private toDomain(schema: RoleSchema): Role {
-    return new Role(schema.id, schema.name, schema.code);
+    return new Role(schema.id, schema.code, schema.name);
   }
 }

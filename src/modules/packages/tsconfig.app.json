@@ -1,0 +1,14 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/packages-api"
+  },
+  "include": [
+    "**/*",
+    "../../common/**/*",
+    "../../config/**/*",
+    "../users/infrastructure/persistence/typeorm/user-schema.entity.ts",
+    "../users/infrastructure/persistence/typeorm/role-schema.entity.ts",
+    "../users/infrastructure/persistence/typeorm/state-user-schema.entity.ts"
+  ]
+}

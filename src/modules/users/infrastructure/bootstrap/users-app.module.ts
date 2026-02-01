@@ -1,0 +1,54 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_FILTER } from '@nestjs/core';
+import { join } from 'path';
+import { UsersModule } from '../../users.module';
+import { HealthModule } from '../../../../common/health/health.module';
+import { UserSchema } from '../persistence/typeorm/user-schema.entity';
+import { RoleSchema } from '../persistence/typeorm/role-schema.entity';
+import { StateUserSchema } from '../persistence/typeorm/state-user-schema.entity';
+import { PackageSchema } from '../../../packages/infrastructure/persistence/typeorm/package-schema.entity';
+import { configuration, validationSchema } from '../../../../config/configuration';
+import { LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
+import { LoggerFactoryAdapter } from '../../../../common/adapters/logger/logger-factory.adapter';
+import { DomainExceptionFilter } from '../../../../common/filters/domain-exception.filter';
+
+/**
+ * Módulo raíz de la aplicación users-api.
+ * Configura infraestructura (DB, Config) e importa UsersModule.
+ */
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validationSchema,
+      validationOptions: { allowUnknown: true },
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        host: config.get<string>('database.host'),
+        port: config.get<number>('database.port'),
+        username: config.get<string>('database.username'),
+        password: config.get<string>('database.password'),
+        database: config.get<string>('database.database'),
+        entities: [UserSchema, RoleSchema, StateUserSchema, PackageSchema],
+        migrations: [join(__dirname, '../../../../database/migrations/*.js')],
+        migrationsRun: config.get<boolean>('database.migrationsRun'),
+        synchronize: false,
+        logging: config.get<boolean>('database.logging'),
+      }),
+      inject: [ConfigService],
+    }),
+    UsersModule,
+    HealthModule,
+  ],
+  providers: [
+    { provide: LOGGER_FACTORY, useClass: LoggerFactoryAdapter },
+    { provide: APP_FILTER, useClass: DomainExceptionFilter },
+  ],
+})
+export class UsersAppModule {}

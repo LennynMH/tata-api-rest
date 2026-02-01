@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { CreateUserUseCase } from '../../application/use-cases/create-user.use-case';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UserResponseDto } from './dto/response/user-response.dto';
-import { AppLogger } from '../../../../common/logger/app.logger';
+import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
 
 /**
  * Adaptador HTTP (puerto de entrada)
@@ -14,12 +14,15 @@ import { AppLogger } from '../../../../common/logger/app.logger';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  private readonly logger = new AppLogger(UsersController.name);
+  private readonly logger: ReturnType<ILoggerFactory['create']>;
 
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly getUserUseCase: GetUserUseCase,
-  ) {}
+    @Inject(LOGGER_FACTORY) private readonly loggerFactory: ILoggerFactory,
+  ) {
+    this.logger = loggerFactory.create(UsersController.name);
+  }
 
   @Post()
   @ApiOperation({ summary: 'Crear usuario (HU-01)' })

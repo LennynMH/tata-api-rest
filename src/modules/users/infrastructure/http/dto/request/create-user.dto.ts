@@ -1,34 +1,23 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsIn,
-  MinLength,
-} from 'class-validator';
-import { ROLE_CODE_DEFAULT, ROLE_CODES } from '../../../../../../common/constants/role.constants';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'usuario@ejemplo.com' })
   @IsEmail()
-  @IsNotEmpty()
   email: string;
 
   @ApiProperty({ example: 'password123', minLength: 6 })
-  @IsNotEmpty()
-  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @IsString()
+  @MinLength(6)
   password: string;
 
   @ApiProperty({ example: 'Juan Pérez' })
+  @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyOptional({
-    enum: ROLE_CODES,
-    default: ROLE_CODE_DEFAULT,
-    description: 'Código del rol (ADM=admin, USU=user). Por defecto: USU',
-  })
+  @ApiPropertyOptional({ example: 'USU', description: 'Código del rol (ADM o USU)' })
   @IsOptional()
-  @IsIn([...ROLE_CODES], { message: 'role_cod debe ser ADM o USU' })
+  @IsString()
   role_cod?: string;
 }

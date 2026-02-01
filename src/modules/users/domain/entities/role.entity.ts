@@ -1,17 +1,11 @@
-export interface RoleDomain {
-  id: string;
-  name: string;
-  code: string;
-}
-
-export class Role implements RoleDomain {
+export class Role {
   constructor(
     public readonly id: string,
-    public readonly name: string,
     public readonly code: string,
+    public readonly name: string,
   ) {}
 
-  static create(id: string, name: string, code: string): Role {
-    return new Role(id, name, code);
+  static create(id: string, code: string, name: string): Role {
+    return new Role(id, code.toUpperCase(), name);
   }
 }

@@ -11,14 +11,21 @@ export class UserResponseDto {
   @ApiProperty()
   name: string;
 
-  @ApiProperty({ description: 'Rol del usuario (tabla roles)' })
+  @ApiProperty()
   role: {
     id: string;
-    name: string;
     code: string;
+    name: string;
   };
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Estado del usuario (HU-02)', example: { id: 'uuid', codigo: 'ACT', descripcion: 'Activo' } })
+  state: {
+    id: string;
+    codigo: string;
+    descripcion: string;
+  };
+
+  @ApiProperty({ description: 'Usuario activo (derivado de state.codigo === ACT)' })
   isActive: boolean;
 
   @ApiProperty()
@@ -34,10 +41,15 @@ export class UserResponseDto {
       name: user.name,
       role: {
         id: user.role.id,
-        name: user.role.name,
         code: user.role.code,
+        name: user.role.name,
       },
-      isActive: user.isActive,
+      state: {
+        id: user.state.id,
+        codigo: user.state.code,
+        descripcion: user.state.description,
+      },
+      isActive: user.state.code === 'ACT',
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
