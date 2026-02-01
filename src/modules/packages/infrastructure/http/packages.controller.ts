@@ -1,24 +1,32 @@
-import { Body, Controller, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Headers,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { CreatePackageUseCase } from '../../application/use-cases/create-package.use-case';
 import { ListUserPackagesUseCase } from '../../application/use-cases/list-user-packages.use-case';
 import { GetPackageByIdUseCase } from '../../application/use-cases/get-package-by-id.use-case';
 import { UpdatePackageStatusUseCase } from '../../application/use-cases/update-package-status.use-case';
 import { CreatePackageDto } from './dto/request/create-package.dto';
-import { ListPackagesQueryDto } from './dto/request/list-packages-query.dto';
 import { UpdatePackageStatusDto } from './dto/request/update-package-status.dto';
 import { PackageResponseDto } from './dto/response/package-response.dto';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
+import { JwtAuthGuard } from '../../../../common/auth/jwt-auth.guard';
+import { RequestUser } from '../../../../common/auth/jwt.strategy';
 
-/**
- * Adaptador HTTP - Módulo packages
- * HU-03: Ver paquetes registrados del usuario
- * HU-04: Registrar nuevo paquete
- * HU-05: Consultar datos de un paquete
- * HU-06: Actualizar estado de paquete
- */
 @ApiTags('packages')
+@ApiBearerAuth('JWT')
 @Controller('packages')
+@UseGuards(JwtAuthGuard)
 export class PackagesController {
   private readonly logger: ReturnType<ILoggerFactory['create']>;
 
@@ -35,16 +43,23 @@ export class PackagesController {
   @Post()
   @ApiOperation({ summary: 'Registrar paquete (HU-04)' })
   @ApiResponse({ status: 201, description: 'Paquete creado correctamente' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   @ApiResponse({ status: 409, description: 'Número de seguimiento duplicado' })
-  async create(@Body() dto: CreatePackageDto) {
-    this.logger.log(`POST /packages - user_id=${dto.user_id}, tracking=${dto.tracking_number}`);
+  async create(
+    @Req() req: { user: RequestUser },
+    @Headers('authorization') authHeader: string,
+    @Body() dto: CreatePackageDto,
+  ) {
+    const userId = req.user.id;
+    this.logger.log(`POST /packages - user_id=${userId}, tracking=${dto.tracking_number}`);
     const pkg = await this.createPackageUseCase.execute({
-      userId: dto.user_id,
+      userId,
       trackingNumber: dto.tracking_number,
       origin: dto.origin,
       destination: dto.destination,
       status: dto.status,
+      authHeader: authHeader ?? undefined,
     });
     this.logger.log(`POST /packages - created id=${pkg.id}`);
     return PackageResponseDto.fromDomain(pkg);
@@ -52,13 +67,12 @@ export class PackagesController {
 
   @Get()
   @ApiOperation({ summary: 'Listar paquetes del usuario (HU-03)' })
-  @ApiQuery({ name: 'user_id', required: true, description: 'UUID del usuario propietario' })
-  @ApiResponse({ status: 200, description: 'Lista de paquetes del usuario' })
-  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async listByUser(@Query() query: ListPackagesQueryDto) {
-    const userId = query.user_id;
-    this.logger.log(`GET /packages?user_id=${userId}`);
-    const packages = await this.listUserPackagesUseCase.execute(userId);
+  @ApiResponse({ status: 200, description: 'Lista de paquetes del usuario autenticado' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
+  async listByUser(@Req() req: { user: RequestUser }, @Headers('authorization') authHeader: string) {
+    const userId = req.user.id;
+    this.logger.log(`GET /packages - user_id=${userId}`);
+    const packages = await this.listUserPackagesUseCase.execute(userId, authHeader ?? undefined);
     return packages.map((p) => PackageResponseDto.fromDomain(p));
   }
 
@@ -66,10 +80,15 @@ export class PackagesController {
   @ApiOperation({ summary: 'Consultar paquete por ID (HU-05)' })
   @ApiParam({ name: 'id', description: 'UUID del paquete' })
   @ApiResponse({ status: 200, description: 'Paquete encontrado' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
+  @ApiResponse({ status: 403, description: 'Sin permiso para este paquete' })
   @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
-  async findById(@Param('id') id: string) {
+  async findById(@Req() req: { user: RequestUser }, @Param('id') id: string) {
     this.logger.log(`GET /packages/${id}`);
     const pkg = await this.getPackageByIdUseCase.execute(id);
+    if (pkg.userId !== req.user.id && req.user.role !== 'ADM') {
+      throw new ForbiddenException('No tiene permiso para consultar este paquete');
+    }
     return PackageResponseDto.fromDomain(pkg);
   }
 
@@ -78,14 +97,23 @@ export class PackagesController {
   @ApiParam({ name: 'id', description: 'UUID del paquete' })
   @ApiResponse({ status: 200, description: 'Estado actualizado correctamente' })
   @ApiResponse({ status: 400, description: 'Estado inválido' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
+  @ApiResponse({ status: 403, description: 'Sin permiso para este paquete' })
   @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
-  async updateStatus(@Param('id') id: string, @Body() dto: UpdatePackageStatusDto) {
+  async updateStatus(
+    @Req() req: { user: RequestUser },
+    @Param('id') id: string,
+    @Body() dto: UpdatePackageStatusDto,
+  ) {
+    const pkg = await this.getPackageByIdUseCase.execute(id);
+    if (pkg.userId !== req.user.id && req.user.role !== 'ADM') {
+      throw new ForbiddenException('No tiene permiso para actualizar este paquete');
+    }
     this.logger.log(`PATCH /packages/${id} - status=${dto.status}`);
-    const pkg = await this.updatePackageStatusUseCase.execute({
+    const updated = await this.updatePackageStatusUseCase.execute({
       packageId: id,
       status: dto.status,
     });
-    this.logger.log(`PATCH /packages/${id} - updated to ${pkg.statePackage.code}`);
-    return PackageResponseDto.fromDomain(pkg);
+    return PackageResponseDto.fromDomain(updated);
   }
 }

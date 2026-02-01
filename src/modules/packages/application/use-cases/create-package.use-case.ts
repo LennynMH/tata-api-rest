@@ -16,6 +16,7 @@ export interface CreatePackageInput {
   origin: string;
   destination: string;
   status?: string;
+  authHeader?: string;
 }
 
 @Injectable()
@@ -38,7 +39,7 @@ export class CreatePackageUseCase {
   async execute(input: CreatePackageInput): Promise<Package> {
     this.logger.debug(`CreatePackage: userId=${input.userId}, tracking=${input.trackingNumber}`);
 
-    const user = await this.userFinder.findById(input.userId);
+    const user = await this.userFinder.findById(input.userId, input.authHeader);
     if (!user) {
       throw new UserNotFoundException(input.userId);
     }

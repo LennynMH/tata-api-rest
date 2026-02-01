@@ -20,10 +20,10 @@ export class ListUserPackagesUseCase {
     this.logger = loggerFactory.create(ListUserPackagesUseCase.name);
   }
 
-  async execute(userId: string): Promise<Package[]> {
+  async execute(userId: string, authHeader?: string): Promise<Package[]> {
     this.logger.debug(`ListUserPackages: userId=${userId}`);
 
-    const user = await this.userFinder.findById(userId);
+    const user = await this.userFinder.findById(userId, authHeader);
     if (!user) {
       throw new UserNotFoundException(userId);
     }

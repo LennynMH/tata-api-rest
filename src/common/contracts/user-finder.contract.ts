@@ -7,5 +7,5 @@ export interface UserFinderResult {
 }
 
 export interface IUserFinder {
-  findById(id: string): Promise<UserFinderResult | null>;
+  findById(id: string, authHeader?: string): Promise<UserFinderResult | null>;
 }

@@ -32,6 +32,11 @@ export interface MongoConfig {
   uri: string;
 }
 
+export interface JwtConfig {
+  secret: string;
+  expiresIn: string;
+}
+
 export const configuration = () => ({
   // Server
   port: parseInt(process.env.PORT ?? '2000', 10),
@@ -75,6 +80,12 @@ export const configuration = () => ({
       process.env.MONGO_URI ??
       'mongodb://admin:admin123@localhost:27017/tracking_db?authSource=admin',
   },
+
+  // JWT (HU-11 - autenticación)
+  jwt: {
+    secret: process.env.JWT_SECRET ?? 'change-me-in-production',
+    expiresIn: process.env.JWT_EXPIRES_IN ?? '30m',
+  },
 });
 
 export const validationSchema = Joi.object({
@@ -103,4 +114,6 @@ export const validationSchema = Joi.object({
   MONGO_URI: Joi.string().default(
     'mongodb://admin:admin123@localhost:27017/tracking_db?authSource=admin',
   ),
+  JWT_SECRET: Joi.string().default('change-me-in-production'),
+  JWT_EXPIRES_IN: Joi.string().default('30m'),
 });

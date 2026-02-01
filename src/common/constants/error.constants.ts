@@ -51,6 +51,12 @@ export const ESTADO_USUARIO_NO_ENCONTRADO = {
   httpStatus: 500,
 } as const;
 
+export const CREDENCIALES_INVALIDAS = {
+  code: 'USR005',
+  message: 'Credenciales inválidas (email o contraseña incorrectos)',
+  httpStatus: 401,
+} as const;
+
 // Errores específicos de paquetes
 export const PAQUETE_NO_ENCONTRADO = {
   code: 'PKG001',
@@ -79,6 +85,7 @@ export const ERROR_CODE_TO_HTTP_STATUS: Record<string, number> = {
   [ROL_INVALIDO.code]: ROL_INVALIDO.httpStatus,
   [USUARIO_NO_ENCONTRADO.code]: USUARIO_NO_ENCONTRADO.httpStatus,
   [ESTADO_USUARIO_NO_ENCONTRADO.code]: ESTADO_USUARIO_NO_ENCONTRADO.httpStatus,
+  [CREDENCIALES_INVALIDAS.code]: CREDENCIALES_INVALIDAS.httpStatus,
   [PAQUETE_NO_ENCONTRADO.code]: PAQUETE_NO_ENCONTRADO.httpStatus,
   [PAQUETE_TRACKING_DUPLICADO.code]: PAQUETE_TRACKING_DUPLICADO.httpStatus,
   [ESTADO_PAQUETE_INVALIDO.code]: ESTADO_PAQUETE_INVALIDO.httpStatus,

@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { APP_FILTER } from '@nestjs/core';
 import { PackagesModule } from '../../packages.module';
 import { HealthTypeormModule } from '../../../../common/health/health.typeorm.module';
 import { SharedInfraModule } from '../../../../common/infrastructure/shared-infra.module';
+import { JwtStrategy } from '../../../../common/auth/jwt.strategy';
 import { UserSchema } from '../../../users/infrastructure/persistence/typeorm/user-schema.entity';
 import { RoleSchema } from '../../../users/infrastructure/persistence/typeorm/role-schema.entity';
 import { StateUserSchema } from '../../../users/infrastructure/persistence/typeorm/state-user-schema.entity';
@@ -42,11 +45,21 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
       }),
       inject: [ConfigService],
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('jwt.secret'),
+        signOptions: { expiresIn: config.get<string>('jwt.expiresIn') ?? '30m' },
+      }),
+      inject: [ConfigService],
+    }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     SharedInfraModule,
     PackagesModule,
     HealthTypeormModule,
   ],
   providers: [
+    JwtStrategy,
     { provide: APP_FILTER, useClass: DomainExceptionFilter },
   ],
 })

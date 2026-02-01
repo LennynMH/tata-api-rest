@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { APP_FILTER } from '@nestjs/core';
 import { configuration, validationSchema } from '../../../../config/configuration';
 import { TrackingModule } from '../../tracking.module';
 import { SharedInfraModule } from '../../../../common/infrastructure/shared-infra.module';
 import { HealthModule } from '../../../../common/health/health.module';
+import { JwtStrategy } from '../../../../common/auth/jwt.strategy';
 import { DomainExceptionFilter } from '../../../../common/filters/domain-exception.filter';
 
 /**
@@ -31,7 +34,15 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
       inject: [ConfigService],
     }),
 
-    // Módulos compartidos
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('jwt.secret'),
+        signOptions: { expiresIn: config.get<string>('jwt.expiresIn') ?? '30m' },
+      }),
+      inject: [ConfigService],
+    }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     SharedInfraModule,
     HealthModule,
 
@@ -39,6 +50,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
     TrackingModule,
   ],
   providers: [
+    JwtStrategy,
     { provide: APP_FILTER, useClass: DomainExceptionFilter },
   ],
 })

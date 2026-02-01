@@ -72,6 +72,8 @@ services:
       DB_NAME: logistics_db
       RUN_MIGRATIONS: 'true'
       HEALTH_DB_TIMEOUT_MS: 1500
+      JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
     ports:
       - '2001:2001'
     healthcheck:
@@ -106,6 +108,8 @@ services:
       RUN_MIGRATIONS: 'false'
       HEALTH_DB_TIMEOUT_MS: 1500
       USERS_API_URL: http://users-api:2001
+      JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
     ports:
       - '2002:2002'
 
@@ -130,6 +134,8 @@ services:
       MONGO_URI: mongodb://admin:admin123@mongodb:27017/tracking_db?authSource=admin
       PACKAGES_API_URL: http://packages-api:2002
       HEALTH_DB_TIMEOUT_MS: 1500
+      JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
     ports:
       - '2003:2003'
     healthcheck:

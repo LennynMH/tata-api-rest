@@ -6,7 +6,6 @@ import {
   TRACKING_EVENT_REPOSITORY,
 } from '../ports/tracking-event.repository.port';
 import { IPackageFinder, PACKAGE_FINDER } from '../../../../common/contracts/package-finder.contract';
-import { PackageNotFoundException } from '../../../../common/exceptions/package-not-found.exception';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
 
 export interface RegisterTrackingEventInput {
@@ -27,8 +26,6 @@ export class RegisterTrackingEventUseCase {
   constructor(
     @Inject(TRACKING_EVENT_REPOSITORY)
     private readonly trackingEventRepository: ITrackingEventRepository,
-    @Inject(PACKAGE_FINDER)
-    private readonly packageFinder: IPackageFinder,
     @Inject(LOGGER_FACTORY)
     private readonly loggerFactory: ILoggerFactory,
   ) {
@@ -38,12 +35,8 @@ export class RegisterTrackingEventUseCase {
   async execute(input: RegisterTrackingEventInput): Promise<TrackingEvent> {
     this.logger.log(`Registrando evento de seguimiento para paquete ${input.packageId}`);
 
-    // Validar que el paquete existe
-    const packageExists = await this.packageFinder.existsById(input.packageId);
-    if (!packageExists) {
-      this.logger.warn(`Paquete no encontrado: ${input.packageId}`);
-      throw new PackageNotFoundException(input.packageId);
-    }
+    // La verificación de existencia y propiedad del paquete se hace en el controller (getPackageOwnerId + JWT)
+    // antes de invocar este use case.
 
     // Crear evento de seguimiento
     const event = TrackingEvent.create(

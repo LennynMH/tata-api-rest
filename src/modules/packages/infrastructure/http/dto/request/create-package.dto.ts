@@ -3,9 +3,13 @@ import { IsIn, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 import { STATE_PACKAGE_CODES } from '../../../../../../common/constants/state-package.constants';
 
 export class CreatePackageDto {
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Opcional con JWT: se usa el userId del token (HU-11)',
+  })
+  @IsOptional()
   @IsUUID()
-  user_id: string;
+  user_id?: string;
 
   @ApiProperty({ example: 'PKG-2024-001' })
   @IsString()

@@ -12,13 +12,16 @@ export class HttpUserApiAdapter implements IUserFinder {
     private readonly config: ConfigService,
   ) {}
 
-  async findById(id: string): Promise<UserFinderResult | null> {
+  async findById(id: string, authHeader?: string): Promise<UserFinderResult | null> {
     const baseUrl = this.config.get<string>('usersApiUrl', 'http://localhost:2001');
     try {
+      const headers: Record<string, string> = {};
+      if (authHeader) headers['Authorization'] = authHeader;
       const response = await this.apiGateway.invokeEndpoint<UserApiResponse>({
         host: baseUrl,
         path: `/api/users/${id}`,
         method: 'GET',
+        headers: Object.keys(headers).length ? headers : undefined,
         timeoutMs: 5000,
       });
       return {

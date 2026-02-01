@@ -6,4 +6,9 @@ export class SimplePasswordHasher implements IPasswordHasher {
   async hash(password: string): Promise<string> {
     return Buffer.from(password, 'utf-8').toString('base64');
   }
+
+  async compare(plainPassword: string, hashedPassword: string): Promise<boolean> {
+    const hashed = await this.hash(plainPassword);
+    return hashed === hashedPassword;
+  }
 }
