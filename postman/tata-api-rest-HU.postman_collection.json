@@ -1,0 +1,423 @@
+{
+  "info": {
+    "name": "tata-api-rest - Historias de Usuario (HU)",
+    "description": "Colección Postman organizada por HU (Historias de Usuario implementadas).\n\n**Estado:** 10 HUs implementadas (HU-01 a HU-08, HU-10 Docker, HU-11 auth). Pendiente: HU-09 (backups).\n\n**Usuarios por defecto (seed):**\n- {{adminEmail}} / {{adminPassword}} (rol ADM)\n- {{userEmail}} / {{userPassword}} (rol USU)\n\n**Todas las rutas (excepto login y health) requieren JWT:** Header `Authorization: Bearer {{access_token}}`.\n\n**Orden sugerido para pruebas:**\n1. HU-11 Login (admin o usuario) → guarda `access_token` y `userId`\n2. HU-01 Crear usuario (solo con token ADM)\n3. HU-04 Registrar paquete → guarda `packageId`\n4. HU-03, HU-05, HU-06, HU-07, HU-08 (todas con Bearer token)\n\n**Requerido:** Importar el entorno `tata-api-rest.postman_environment.json` y seleccionarlo. El token, userId y packageId se guardan en el entorno.\n\n**Variables (entorno o colección):**\n| Variable | Descripción | Valor por defecto |\n|----------|-------------|-------------------|\n| usersApiUrl | URL users-api | http://localhost:2001 |\n| packagesApiUrl | URL packages-api | http://localhost:2002 |\n| trackingApiUrl | URL tracking-api | http://localhost:2003 |\n| access_token | JWT (se guarda en login en entorno) | (vacío) |\n| userId | UUID usuario (se guarda en login/create en entorno) | (vacío) |\n| packageId | UUID paquete (se guarda en POST /packages en entorno) | (vacío) |\n| adminEmail | Email administrador | admin@ejemplo.com |\n| adminPassword | Password administrador | password123 |\n| userEmail | Email usuario demo | usuario@ejemplo.com |\n| userPassword | Password usuario demo | password123 |\n| trackingNumber | Número seguimiento paquete | PKG-2024-001 |",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "usersApiUrl", "value": "http://localhost:2001", "type": "string" },
+    { "key": "packagesApiUrl", "value": "http://localhost:2002", "type": "string" },
+    { "key": "trackingApiUrl", "value": "http://localhost:2003", "type": "string" },
+    { "key": "access_token", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "packageId", "value": "", "type": "string" },
+    { "key": "adminEmail", "value": "admin@ejemplo.com", "type": "string" },
+    { "key": "adminPassword", "value": "password123", "type": "string" },
+    { "key": "userEmail", "value": "usuario@ejemplo.com", "type": "string" },
+    { "key": "userPassword", "value": "password123", "type": "string" },
+    { "key": "trackingNumber", "value": "PKG-2024-001", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "description": "Verificación de que los servicios están activos. No requieren JWT.\n\n**Parámetros:** usa variables usersApiUrl, packagesApiUrl, trackingApiUrl.",
+      "item": [
+        {
+          "name": "GET Health (completo) - users-api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{usersApiUrl}}/api/health",
+            "description": "Health completo con BD. 200 = ok, info.database.status=up."
+          }
+        },
+        {
+          "name": "GET Health Live - users-api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{usersApiUrl}}/api/health/live",
+            "description": "Liveness de users-api. 200 = servicio activo (sin verificar BD)."
+          }
+        },
+        {
+          "name": "GET Health Ready - users-api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{usersApiUrl}}/api/health/ready",
+            "description": "Readiness de users-api. 200 = listo para tráfico (incluye BD)."
+          }
+        },
+        {
+          "name": "GET Health Live - packages-api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{packagesApiUrl}}/api/health/live",
+            "description": "Liveness de packages-api. 200 = servicio activo."
+          }
+        },
+        {
+          "name": "GET Health Live - tracking-api",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{trackingApiUrl}}/api/health/live",
+            "description": "Liveness de tracking-api. 200 = servicio activo."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-11 - Login",
+      "description": "Iniciar sesión para obtener JWT. Todas las demás rutas requieren Bearer token.\n\n**Servicio:** users-api (puerto 2001)\n**Público:** no requiere token.\n**Usuarios seed:** admin@ejemplo.com (ADM), usuario@ejemplo.com (USU) - ambos password123\n**Response:** 201 + access_token, user (id, email, name, role)\n**Errores:** 401 = credenciales inválidas (USR005)",
+      "item": [
+        {
+          "name": "POST Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.access_token) pm.environment.set('access_token', json.access_token);",
+                  "    if (json.user && json.user.id) pm.environment.set('userId', json.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": "{{usersApiUrl}}/api/auth/login",
+            "description": "Login con admin. 201 = access_token + user. El script guarda access_token y userId. 401 = credenciales inválidas (USR005)."
+          }
+        },
+        {
+          "name": "POST Login (usuario)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.access_token) pm.environment.set('access_token', json.access_token);",
+                  "    if (json.user && json.user.id) pm.environment.set('userId', json.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}"
+            },
+            "url": "{{usersApiUrl}}/api/auth/login",
+            "description": "Login con usuario demo (rol USU). Para probar flujos donde USU no puede crear usuarios (403)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-01 - Crear usuario",
+      "description": "Como administrador, quiero crear nuevos usuarios para que puedan registrarse y usar los servicios de paquetes.\n\n**Servicio:** users-api (puerto 2001)\n**Requiere:** JWT con rol ADM (403 si es USU)\n**Tras crear:** el script guarda `id` en variable `userId`\n**Errores:** 409 = email duplicado (USR001), 400 = rol inválido (USR002)",
+      "item": [
+        {
+          "name": "POST Crear usuario (rol USU)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.id) pm.environment.set('userId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo-usuario-{{$timestamp}}@ejemplo.com\",\n  \"password\": \"{{userPassword}}\",\n  \"name\": \"Juan Pérez\",\n  \"role_cod\": \"USU\"\n}"
+            },
+            "url": "{{usersApiUrl}}/api/users",
+            "description": "Crea usuario con rol USU. 201 = creado. 409 = email duplicado. 400 = validación fallida (email inválido, password < 6)."
+          }
+        },
+        {
+          "name": "POST Crear usuario (rol ADM)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.id) pm.environment.set('userId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin-nuevo-{{$timestamp}}@ejemplo.com\",\n  \"password\": \"{{adminPassword}}\",\n  \"name\": \"Administrador Nuevo\",\n  \"role_cod\": \"ADM\"\n}"
+            },
+            "url": "{{usersApiUrl}}/api/users",
+            "description": "Crea usuario con rol ADM. Requiere token ADM. 201 = creado. 403 = token sin rol ADM."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-02 - Consultar usuario",
+      "description": "Como administrador o usuario, quiero consultar los datos de un usuario (información personal y estado).\n\n**Servicio:** users-api (puerto 2001)\n**Requiere:** variable `userId` con UUID válido.",
+      "item": [
+        {
+          "name": "GET Consultar usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{usersApiUrl}}/api/users/{{userId}}",
+            "description": "Consulta usuario por UUID. Requiere JWT. Solo propio perfil o ADM (403 si no es dueño ni ADM). Incluye role, state, isActive. 200 = OK. 404 = USR003."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-03 - Ver paquetes del usuario",
+      "description": "Como usuario, quiero ver todos los paquetes que tengo registrados para hacer seguimiento.\n\n**Servicio:** packages-api (puerto 2002)\n**Requiere:** JWT (userId se obtiene del token)\n**Response:** array de paquetes del usuario autenticado. 200 = OK (array puede estar vacío).",
+      "item": [
+        {
+          "name": "GET Listar paquetes",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": {
+              "raw": "{{packagesApiUrl}}/api/packages",
+              "host": ["{{packagesApiUrl}}"],
+              "path": ["api", "packages"]
+            },
+            "description": "Lista paquetes del usuario. 200 = array de paquetes (puede ser vacío). 404 = usuario no encontrado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-04 - Registrar paquete",
+      "description": "Como usuario, quiero registrar un nuevo paquete para que el sistema lo gestione y rastree hasta la entrega.\n\n**Servicio:** packages-api (puerto 2002)\n**Requiere:** JWT (userId del token)\n**Tras crear:** script guarda `packageId` para HU-05, HU-06, HU-07, HU-08\n**Campos:** tracking_number, origin, destination (obligatorios); status (opcional: pendiente, en_tránsito, entregado)",
+      "item": [
+        {
+          "name": "POST Registrar paquete",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.id) pm.environment.set('packageId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tracking_number\": \"{{trackingNumber}}\",\n  \"origin\": \"Lima, Perú\",\n  \"destination\": \"Arequipa, Perú\",\n  \"status\": \"pendiente\"\n}"
+            },
+            "url": "{{packagesApiUrl}}/api/packages",
+            "description": "Registra paquete para el usuario autenticado (userId del token). user_id opcional (JWT tiene prioridad). status opcional. 201 = creado. 409 = PKG002 tracking duplicado. Script guarda packageId."
+          }
+        },
+        {
+          "name": "POST Registrar paquete (sin status - default pendiente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.id) pm.environment.set('packageId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tracking_number\": \"{{trackingNumber}}-2\",\n  \"origin\": \"Cusco, Perú\",\n  \"destination\": \"Trujillo, Perú\"\n}"
+            },
+            "url": "{{packagesApiUrl}}/api/packages",
+            "description": "Registra paquete sin status (default pendiente). userId del token. Requiere Authorization header."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-05 - Consultar paquete",
+      "description": "Como usuario o administrador, quiero consultar los datos de un paquete (estado, origen, destino, propietario).\n\n**Servicio:** packages-api (puerto 2002)\n**Requiere:** JWT + packageId (propio paquete o rol ADM)\n**Response:** incluye owner (id, email, name), state, origin, destination. 403 si no es dueño ni ADM. 404 = PKG001.",
+      "item": [
+        {
+          "name": "GET Consultar paquete por ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{packagesApiUrl}}/api/packages/{{packageId}}",
+            "description": "Consulta paquete por UUID. Incluye owner (id, email, name del propietario) y state (estado). 200 = OK. 404 = paquete no encontrado (PKG001)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-06 - Actualizar estado paquete",
+      "description": "Como administrador o sistema, quiero actualizar el estado de un paquete (pendiente, en tránsito, entregado).\n\n**Servicio:** packages-api (puerto 2002)\n**Requiere:** JWT + packageId (propio paquete o ADM)\n**Body:** { \"status\": \"pendiente\" | \"en_tránsito\" | \"entregado\" }\n**Errores:** 400 = PKG003 estado inválido. 403 = sin permiso. 404 = PKG001.",
+      "item": [
+        {
+          "name": "PATCH Actualizar a en_tránsito",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"en_tránsito\"\n}"
+            },
+            "url": "{{packagesApiUrl}}/api/packages/{{packageId}}",
+            "description": "Actualiza estado a 'en_tránsito'. 200 = actualizado. 400 = estado inválido (PKG003). 404 = paquete no encontrado (PKG001)."
+          }
+        },
+        {
+          "name": "PATCH Actualizar a entregado",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"entregado\"\n}"
+            },
+            "url": "{{packagesApiUrl}}/api/packages/{{packageId}}",
+            "description": "Actualiza estado a 'entregado'. Estados válidos: pendiente, en_tránsito, entregado."
+          }
+        },
+        {
+          "name": "PATCH Actualizar a pendiente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"pendiente\"\n}"
+            },
+            "url": "{{packagesApiUrl}}/api/packages/{{packageId}}",
+            "description": "Actualiza estado a 'pendiente' (volver al estado inicial)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-07 - Registrar evento de seguimiento",
+      "description": "Como usuario o sistema de logística, quiero registrar eventos de seguimiento de un paquete (ubicación y estado).\n\n**Servicio:** tracking-api (puerto 2003)\n**Requiere:** JWT + packageId (propio paquete o ADM)\n**Base de datos:** MongoDB (NoSQL)\n**Campos obligatorios:** event_type, location.address, status, description\n**Opcionales:** location.coordinates, event_date, metadata, created_by",
+      "item": [
+        {
+          "name": "POST Registrar evento (completo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"location_update\",\n  \"location\": {\n    \"address\": \"Centro de Distribución Lima, Perú\",\n    \"coordinates\": { \"lat\": -12.0464, \"lng\": -77.0428 }\n  },\n  \"status\": \"en_tránsito\",\n  \"description\": \"Paquete recibido en centro de distribución\",\n  \"event_date\": \"2025-01-30T10:00:00Z\",\n  \"metadata\": { \"carrier\": \"DHL\", \"vehicle\": \"TRUCK-123\" },\n  \"created_by\": \"system\"\n}"
+            },
+            "url": "{{trackingApiUrl}}/api/packages/{{packageId}}/tracking-events",
+            "description": "Registra evento con todos los campos. event_date y metadata son opcionales. 201 = creado. 404 = paquete no encontrado (PKG001). 400 = validación fallida."
+          }
+        },
+        {
+          "name": "POST Registrar evento (mínimo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event_type\": \"status_change\",\n  \"location\": { \"address\": \"Almacén Arequipa, Perú\" },\n  \"status\": \"entregado\",\n  \"description\": \"Paquete entregado al destinatario\"\n}"
+            },
+            "url": "{{trackingApiUrl}}/api/packages/{{packageId}}/tracking-events",
+            "description": "Registra evento solo con campos obligatorios (sin event_date, metadata, coordinates, created_by)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "HU-08 - Consultar historial de seguimiento",
+      "description": "Como usuario, quiero consultar el historial completo de un paquete para saber dónde ha estado y su estado actual.\n\n**Servicio:** tracking-api (puerto 2003)\n**Requiere:** JWT + packageId (propio paquete o ADM)\n**Response:** { packageId, totalEvents, events[] } ordenados por fecha desc.\n**Base de datos:** MongoDB (NoSQL). 404 = PKG001 si paquete no existe.",
+      "item": [
+        {
+          "name": "GET Consultar historial de seguimiento",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{trackingApiUrl}}/api/packages/{{packageId}}/tracking-events",
+            "description": "Devuelve el historial completo de eventos de seguimiento del paquete (packageId, events[]), ordenados por fecha descendente. 200 = OK. 404 = paquete no encontrado (PKG001)."
+          }
+        }
+      ]
+    }
+  ]
+}
