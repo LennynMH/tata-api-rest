@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Roadmap - API Gestión de Envíos</title>
+    <dateCreated>2026-01-31</dateCreated>
+    <dateModified>2026-02-02</dateModified>
+    <description>Historias de usuario (HU) - Seguimiento para XMind. Implementadas: HU-01 a HU-11 (incl. HU-09 cron-database). Usuarios seed: admin@ejemplo.com, usuario@ejemplo.com (password123).</description>
+  </head>
+  <body>
+    <outline text="API REST - Sistema de Gestión de Envíos">
+      <outline text="Historias de Usuario (HU)">
+        <outline text="Perfil: Desarrollador (estimados realistas)"/>
+        <outline text="HU-01 ✅ Crear usuarios (Completada) — 4-5h">
+          <outline text="Rol: Administrador"/>
+          <outline text="Endpoint: POST /api/users (users-api:2001)"/>
+        </outline>
+        <outline text="HU-02 ✅ Consultar usuario (Completada) — 2-3h">
+          <outline text="Rol: Administrador, Usuario"/>
+          <outline text="Endpoint: GET /api/users/:id (users-api:2001)"/>
+        </outline>
+        <outline text="HU-03 ✅ Ver paquetes (Completada) — 3-4h">
+          <outline text="Rol: Usuario"/>
+          <outline text="Endpoint: GET /api/packages (packages-api:2002) - JWT"/>
+        </outline>
+        <outline text="HU-04 ✅ Registrar paquete (Completada) — 4-5h">
+          <outline text="Rol: Usuario"/>
+          <outline text="Endpoint: POST /api/packages (packages-api:2002)"/>
+        </outline>
+        <outline text="HU-05 ✅ Consultar paquete (Completada) — 3h">
+          <outline text="Rol: Usuario, Administrador"/>
+          <outline text="Endpoint: GET /api/packages/:id (packages-api:2002)"/>
+        </outline>
+        <outline text="HU-06 ✅ Actualizar estado paquete (Completada) — 3-4h">
+          <outline text="Rol: Administrador, Sistema"/>
+          <outline text="Endpoint: PATCH /api/packages/:id (packages-api:2002)"/>
+        </outline>
+        <outline text="HU-07 ✅ Registrar eventos seguimiento (Completada) — 6-10h">
+          <outline text="Rol: Usuario, Sistema logística"/>
+          <outline text="Endpoint: POST /api/packages/:packageId/tracking-events (tracking-api:2003)"/>
+          <outline text="Base de datos: MongoDB (NoSQL)"/>
+        </outline>
+        <outline text="HU-08 ✅ Historial paquete (Completada) — 5-6h">
+          <outline text="Rol: Usuario"/>
+          <outline text="Endpoint: GET /api/packages/:packageId/tracking-events (tracking-api:2003)"/>
+          <outline text="Base de datos: MongoDB (NoSQL)"/>
+        </outline>
+        <outline text="HU-09 ✅ Copias de seguridad (Completada) — 4-5h">
+          <outline text="Rol: Administrador del sistema"/>
+          <outline text="Servicio: cron-database (Docker)"/>
+          <outline text="Salida: cron-database/backup/YYYY-MM-DD-HHMM/ (postgres + mongodb)"/>
+          <outline text="Variables: BACKUP_CRON, TZ, BACKUP_RETENTION_DAYS"/>
+        </outline>
+        <outline text="HU-10 ✅ Desplegar contenedores (Completada) — 4-5h">
+          <outline text="Rol: Desarrollador"/>
+          <outline text="Endpoint: Docker Compose"/>
+        </outline>
+        <outline text="HU-11 ✅ Iniciar sesión (Completada) — 8-12h">
+          <outline text="Rol: Usuario"/>
+          <outline text="Endpoint: POST /api/auth/login (users-api:2001)"/>
+          <outline text="JWT Bearer token en rutas protegidas"/>
+        </outline>
+      </outline>
+      <outline text="Criterios de priorización (MVP)">
+        <outline text="Alta - Autenticación y usuarios">
+          <outline text="HU-11 Iniciar sesión"/>
+          <outline text="HU-01 Crear usuarios"/>
+          <outline text="HU-02 Consultar usuario"/>
+        </outline>
+        <outline text="Alta - Gestión de paquetes">
+          <outline text="HU-04 Registrar paquete"/>
+          <outline text="HU-03 Ver paquetes"/>
+          <outline text="HU-05 Consultar paquete"/>
+          <outline text="HU-06 Actualizar estado"/>
+        </outline>
+        <outline text="Media - Seguimiento e historial (MongoDB, tracking-api)">
+          <outline text="HU-07 Registrar eventos ✅"/>
+          <outline text="HU-08 Historial paquete ✅"/>
+        </outline>
+        <outline text="Media - Infraestructura">
+          <outline text="HU-10 Docker ✅ Completada"/>
+        </outline>
+        <outline text="Baja - Operaciones">
+          <outline text="HU-09 Backups ✅ Completada (cron-database)"/>
+        </outline>
+      </outline>
+      <outline text="Leyenda">
+        <outline text="✅ Completada"/>
+        <outline text="🔄 En progreso"/>
+        <outline text="⏳ Pendiente"/>
+      </outline>
+    </outline>
+  </body>
+</opml>

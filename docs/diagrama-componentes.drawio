@@ -1,0 +1,264 @@
+<mxfile host="app.diagrams.net" modified="2026-01-30T00:00:00.000Z" agent="5.0" version="22.1.0" etag="comp-hex" type="device">
+  <diagram id="componentes" name="Componentes - Arquitectura Hexagonal">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ========== TÍTULO ========== -->
+        <mxCell id="title" value="Diagrama de Componentes — Arquitectura Hexagonal" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="320" y="16" width="760" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Domain (entidades) · Application (puertos + casos de uso) · Infrastructure (adaptadores HTTP, persistencia, APIs)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="200" y="46" width="1000" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== MÓDULO USERS ========== -->
+        <mxCell id="zone-users" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#28a745;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="400" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-users-label" value="Módulo Users (users-api :2001)" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#166534;" vertex="1" parent="1">
+          <mxGeometry x="48" y="86" width="280" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Users - Domain -->
+        <mxCell id="u-domain" value="Domain" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="114" width="368" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u-entities" value="User, Role, StateUser&#xa;(entities)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#28a745;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="144" width="352" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Users - Application -->
+        <mxCell id="u-app" value="Application (ports + use cases)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="196" width="368" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u-ports" value="IUserRepository, IRoleRepository, IStateUserRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#15803d;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="224" width="352" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="u-usecases" value="CreateUser, GetUser, Login" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbf7d0;strokeColor=#15803d;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="256" width="352" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Users - Infrastructure -->
+        <mxCell id="u-infra" value="Infrastructure (adapters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="292" width="368" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="u-http" value="UsersController, AuthController&#xa;(HTTP · DTOs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#86efac;strokeColor=#15803d;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="320" width="168" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="u-persist" value="TypeORM: UserSchema, RoleSchema,&#xa;StateUserSchema · Repositories" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#86efac;strokeColor=#15803d;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="248" y="320" width="168" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== MÓDULO PACKAGES ========== -->
+        <mxCell id="zone-pkg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#e0a800;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="420" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-pkg-label" value="Módulo Packages (packages-api :2002)" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#92400e;" vertex="1" parent="1">
+          <mxGeometry x="488" y="86" width="280" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Packages - Domain -->
+        <mxCell id="p-domain" value="Domain" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="496" y="114" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-entities" value="Package, StatePackage&#xa;(entities)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3cd;strokeColor=#e0a800;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="504" y="144" width="372" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Packages - Application -->
+        <mxCell id="p-app" value="Application (ports + use cases)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="496" y="196" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-ports" value="IPackageRepository, IStatePackageRepository, IUserFinder (common)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde68a;strokeColor=#b45309;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="504" y="224" width="372" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-usecases" value="CreatePackage, ListUserPackages, GetPackageById, UpdatePackageStatus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fde68a;strokeColor=#b45309;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="504" y="256" width="372" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Packages - Infrastructure -->
+        <mxCell id="p-infra" value="Infrastructure (adapters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="496" y="292" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-http" value="PackagesController&#xa;(HTTP · DTOs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fcd34d;strokeColor=#b45309;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="504" y="320" width="172" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-persist" value="TypeORM: PackageSchema,&#xa;StatePackageSchema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fcd34d;strokeColor=#b45309;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="320" width="172" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="p-adapter" value="HttpUserApiAdapter&#xa;(IUserFinder → users-api)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fcd34d;strokeColor=#b45309;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="504" y="368" width="356" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== MÓDULO TRACKING ========== -->
+        <mxCell id="zone-tracking" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#faf5ff;strokeColor=#6f42c1;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="940" y="80" width="420" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-tracking-label" value="Módulo Tracking (tracking-api :2003)" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#5b21b6;" vertex="1" parent="1">
+          <mxGeometry x="948" y="86" width="280" height="22" as="geometry"/>
+        </mxCell>
+
+        <!-- Tracking - Domain -->
+        <mxCell id="t-domain" value="Domain" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#6d28d9;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="956" y="114" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-entities" value="TrackingEvent&#xa;(entity)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2d5f1;strokeColor=#6f42c1;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="964" y="144" width="372" height="44" as="geometry"/>
+        </mxCell>
+
+        <!-- Tracking - Application -->
+        <mxCell id="t-app" value="Application (ports + use cases)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#6d28d9;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="956" y="196" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-ports" value="ITrackingEventRepository, IPackageFinder (common)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ddd6fe;strokeColor=#5b21b6;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="964" y="224" width="372" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-usecases" value="RegisterTrackingEvent, GetTrackingHistory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ddd6fe;strokeColor=#5b21b6;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="964" y="256" width="372" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Tracking - Infrastructure -->
+        <mxCell id="t-infra" value="Infrastructure (adapters)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#6d28d9;strokeWidth=1;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="956" y="292" width="388" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-http" value="TrackingController&#xa;(HTTP · DTOs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c4b5fd;strokeColor=#5b21b6;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="964" y="320" width="172" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-persist" value="Mongoose: TrackingEventSchema,&#xa;TrackingEventRepository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c4b5fd;strokeColor=#5b21b6;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1148" y="320" width="172" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="t-adapter" value="HttpPackageApiAdapter&#xa;(IPackageFinder → packages-api)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c4b5fd;strokeColor=#5b21b6;fontSize=9;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="964" y="368" width="356" height="36" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== COMMON ========== -->
+        <mxCell id="zone-common" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#6c757d;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="1320" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-common-label" value="Common (src/common) — Contratos y adaptadores compartidos entre microservicios" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#495057;" vertex="1" parent="1">
+          <mxGeometry x="48" y="456" width="500" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="common-contracts" value="Contratos (ports)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#6c757d;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="484" width="200" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-c1" value="IUserFinder&#xa;(findById)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dee2e6;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="512" width="88" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-c2" value="IPackageFinder&#xa;(existsById, getPackageOwnerId)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dee2e6;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="164" y="512" width="84" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-c3" value="IApiGateway&#xa;(forward token)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dee2e6;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="256" y="512" width="88" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-c4" value="IPasswordHasher&#xa;(hash, compare)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dee2e6;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="352" y="512" width="88" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-c5" value="ILogger" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dee2e6;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="448" y="512" width="72" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="common-adapters" value="Adaptadores (implementaciones)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#6c757d;fontStyle=1;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="562" width="200" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-a1" value="HttpUserApiAdapter&#xa;→ users-api" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ced4da;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="64" y="590" width="100" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-a2" value="HttpPackageApiAdapter&#xa;→ packages-api" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ced4da;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="172" y="590" width="108" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-a3" value="ApiGatewayAdapter&#xa;(Bearer)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ced4da;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="288" y="590" width="88" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-a4" value="SimplePasswordHasher&#xa;(bcrypt)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ced4da;strokeColor=#495057;fontSize=9;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="384" y="590" width="108" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="common-auth" value="Auth: JwtStrategy, JwtAuthGuard · Health: HealthController · Exceptions: DomainException · Filters: DomainExceptionFilter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#6c757d;fontSize=9;align=left;spacingLeft=8;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="56" y="636" width="600" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== FLUJOS HEXAGONALES (flechas internas) ========== -->
+        <mxCell id="flow-u1" edge="1" parent="1" source="u-http" target="u-usecases" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#28a745;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-u2" edge="1" parent="1" source="u-usecases" target="u-entities" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#28a745;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-u3" edge="1" parent="1" source="u-usecases" target="u-persist" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#28a745;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-p1" edge="1" parent="1" source="p-http" target="p-usecases" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#e0a800;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-p2" edge="1" parent="1" source="p-usecases" target="p-entities" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#e0a800;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-p3" edge="1" parent="1" source="p-usecases" target="p-adapter" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#e0a800;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-t1" edge="1" parent="1" source="t-http" target="t-usecases" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#6f42c1;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-t2" edge="1" parent="1" source="t-usecases" target="t-entities" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#6f42c1;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="flow-t3" edge="1" parent="1" source="t-usecases" target="t-adapter" style="endArrow=classic;html=1;strokeWidth=1;strokeColor=#6f42c1;dashed=1;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== DEPENDENCIAS ENTRE MÓDULOS VÍA COMMON ========== -->
+        <mxCell id="dep-p-users" value="implementa&#xa;IUserFinder" edge="1" parent="1" source="common-a1" target="p-adapter" style="endArrow=open;html=1;strokeWidth=2;strokeColor=#92400e;dashed=1;fontSize=8;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="dep-users-api" value="users-api&#xa;expone" edge="1" parent="1" source="u-http" target="common-a1" style="endArrow=open;html=1;strokeWidth=1;strokeColor=#166534;dashed=1;fontSize=8;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="120" y="600"/>
+              <mxPoint x="120" y="342"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dep-t-pkg" value="implementa&#xa;IPackageFinder" edge="1" parent="1" source="common-a2" target="t-adapter" style="endArrow=open;html=1;strokeWidth=2;strokeColor=#5b21b6;dashed=1;fontSize=8;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="dep-pkg-api" value="packages-api&#xa;expone" edge="1" parent="1" source="p-http" target="common-a2" style="endArrow=open;html=1;strokeWidth=1;strokeColor=#92400e;dashed=1;fontSize=8;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="600"/>
+              <mxPoint x="590" y="342"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ========== LEYENDA ========== -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#dee2e6;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="456" width="340" height="194" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-title" value="Leyenda — Hexagonal" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#212529;" vertex="1" parent="1">
+          <mxGeometry x="688" y="462" width="180" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend1" value="• Domain: entidades puras (sin infra)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="488" width="320" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend2" value="• Application: puertos (interfaces) + casos de uso" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="506" width="320" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend3" value="• Infrastructure: controladores HTTP, repos TypeORM/Mongoose, adaptadores HTTP" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="524" width="320" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend4" value="• Common: contratos (IUserFinder, IPackageFinder…) usados por varios módulos" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="542" width="320" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend5" value="• Packages consume IUserFinder (users-api); Tracking consume IPackageFinder (packages-api)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="688" y="560" width="320" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend6" value="Colores: verde=users, ámbar=packages, lavanda=tracking, gris=common" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;fontColor=#6c757d;" vertex="1" parent="1">
+          <mxGeometry x="688" y="584" width="320" height="20" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

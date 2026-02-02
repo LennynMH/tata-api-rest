@@ -1,0 +1,161 @@
+<mxfile host="app.diagrams.net" modified="2026-02-02T00:00:00.000Z" agent="5.0" version="22.1.0" etag="arch-v2" type="device">
+  <diagram id="arquitectura" name="Arquitectura - Sistema Gestión Envíos">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ========== TÍTULO ========== -->
+        <mxCell id="title" value="Sistema de Gestión de Envíos — Arquitectura Hexagonal + Microservicios" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="NestJS 10 · TypeORM (PostgreSQL) · Mongoose (MongoDB) · JWT · Docker Compose" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="450" y="54" width="700" height="24" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== SECCIÓN: CLIENTE ========== -->
+        <mxCell id="zone-client" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f7ff;strokeColor=#6c8ebf;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="220" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-client-label" value="Entrada" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="48" y="96" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="2" value="Cliente&#xa;(Postman / App / cURL)&#xa;&#xa;HTTP REST&#xa;Authorization: Bearer JWT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontStyle=1;fontSize=11;align=center;spacing=6;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="180" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== SECCIÓN: MICROSERVICIOS ========== -->
+        <mxCell id="zone-apis" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fffbf0;strokeColor=#d6b656;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="300" y="90" width="1000" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-apis-label" value="Microservicios (NestJS · Hexagonal: domain → application → infrastructure)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#996600;" vertex="1" parent="1">
+          <mxGeometry x="308" y="96" width="520" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- users-api -->
+        <mxCell id="3" value="users-api&#xa;:2001&#xa;&#xa;Domain: User, Role, StateUser&#xa;Application: CreateUser, GetUser, Login&#xa;Infra: UsersController, AuthController&#xa;TypeORM → PostgreSQL&#xa;&#xa;HU-01, HU-02, HU-11" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d4edda;strokeColor=#28a745;strokeWidth=2;fontSize=10;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="320" y="130" width="260" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- packages-api -->
+        <mxCell id="4" value="packages-api&#xa;:2002&#xa;&#xa;Domain: Package, StatePackage&#xa;Application: CreatePackage, ListUserPackages&#xa;GetPackageById, UpdatePackageStatus&#xa;Infra: PackagesController&#xa;TypeORM → PostgreSQL&#xa;→ IUserFinder (users-api)&#xa;&#xa;HU-03, HU-04, HU-05, HU-06" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3cd;strokeColor=#e0a800;strokeWidth=2;fontSize=10;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="620" y="130" width="300" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- tracking-api -->
+        <mxCell id="5" value="tracking-api&#xa;:2003&#xa;&#xa;Domain: TrackingEvent&#xa;Application: RegisterTrackingEvent&#xa;GetTrackingHistory&#xa;Infra: TrackingController&#xa;Mongoose → MongoDB&#xa;→ IPackageFinder (packages-api)&#xa;&#xa;HU-07, HU-08" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2d5f1;strokeColor=#6f42c1;strokeWidth=2;fontSize=10;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="960" y="130" width="320" height="200" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== SECCIÓN: COMMON ========== -->
+        <mxCell id="zone-common" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#6c757d;strokeWidth=1;dashed=1;dashPattern=6 3;" vertex="1" parent="1">
+          <mxGeometry x="300" y="370" width="980" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-common-label" value="Common (src/common) — Compartido entre microservicios" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#495057;" vertex="1" parent="1">
+          <mxGeometry x="308" y="376" width="400" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="common-box" value="contracts: IUserFinder, IPackageFinder, IApiGateway, IPasswordHasher&#xa;adapters: HttpUserApiAdapter, HttpPackageApiAdapter, ApiGatewayAdapter, SimplePasswordHasher&#xa;auth: JwtStrategy, JwtAuthGuard&#xa;health: HealthController, HealthTypeormController&#xa;constants, exceptions, filters (DomainExceptionFilter)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e9ecef;strokeColor=#6c757d;fontSize=9;align=left;spacingLeft=10;spacingTop=6;verticalAlign=top;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="320" y="398" width="940" height="62" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== SECCIÓN: BASES DE DATOS ========== -->
+        <mxCell id="zone-db" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f5;strokeColor=#9673a6;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="300" y="490" width="980" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-db-label" value="Bases de datos" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#5a4a7a;" vertex="1" parent="1">
+          <mxGeometry x="308" y="496" width="140" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- PostgreSQL -->
+        <mxCell id="6" value="PostgreSQL 16&#xa;logistics_db :5432&#xa;&#xa;Tablas:&#xa;roles, state_users, users&#xa;state_packages, packages&#xa;&#xa;Migrations:&#xa;src/database/migrations/" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontSize=10;align=left;spacingLeft=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="340" y="530" width="220" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- MongoDB -->
+        <mxCell id="7" value="MongoDB 7&#xa;tracking_db :27017&#xa;&#xa;Colección:&#xa;tracking_events&#xa;&#xa;(Mongoose)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;fontSize=10;align=left;spacingLeft=10;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="530" width="200" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== SECCIÓN: BACKUP (HU-09) ========== -->
+        <mxCell id="zone-backup" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff5f5;strokeColor=#b85450;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="300" y="690" width="980" height="160" as="geometry"/>
+        </mxCell>
+        <mxCell id="zone-backup-label" value="Operaciones — HU-09 Backup automático" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=11;fontColor=#a94442;" vertex="1" parent="1">
+          <mxGeometry x="308" y="696" width="280" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="cron-database&#xa;(cron-database/)&#xa;&#xa;Alpine · cron · pg_dump · mongodump&#xa;BACKUP_CRON, TZ, RETENTION_DAYS&#xa;Depende: postgres, mongodb" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontSize=10;align=left;spacingLeft=10;fontStyle=1;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="340" y="728" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="Volumen / Carpeta&#xa;cron-database/backup/&#xa;YYYY-MM-DD-HHMM/&#xa;postgres/ · mongodb/" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ffffff;strokeColor=#666666;strokeWidth=2;fontSize=10;align=center;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="700" y="748" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== CONEXIONES ========== -->
+        <!-- Cliente → APIs -->
+        <mxCell id="e1" edge="1" parent="1" source="2" target="3" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;endFill=1;endSize=6;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="2" target="4" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;endFill=1;endSize=6;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="2" target="5" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6c8ebf;endFill=1;endSize=6;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- packages-api → users-api -->
+        <mxCell id="e4" value="IUserFinder&#xa;HTTP + JWT" edge="1" parent="1" source="4" target="3" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#e0a800;dashed=1;fontSize=9;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- tracking-api → packages-api -->
+        <mxCell id="e5" value="IPackageFinder&#xa;HTTP + JWT" edge="1" parent="1" source="5" target="4" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6f42c1;dashed=1;fontSize=9;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- APIs → BD -->
+        <mxCell id="e6" value="TypeORM" edge="1" parent="1" source="3" target="6" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#28a745;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7" value="TypeORM" edge="1" parent="1" source="4" target="6" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#e0a800;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" value="Mongoose" edge="1" parent="1" source="5" target="7" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#6f42c1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- cron → BD y backup -->
+        <mxCell id="e9" value="pg_dump" edge="1" parent="1" source="8" target="6" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10" value="mongodump" edge="1" parent="1" source="8" target="7" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" value="escribe" edge="1" parent="1" source="8" target="9" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;strokeColor=#b85450;fontColor=#000000;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ========== LEYENDA ========== -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#dee2e6;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="220" height="180" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-title" value="Leyenda" style="text;html=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=12;fontColor=#212529;" vertex="1" parent="1">
+          <mxGeometry x="48" y="496" width="80" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend1" value="• Cliente: HTTP + JWT (login en users-api)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;align=left;spacingLeft=4;" vertex="1" parent="1">
+          <mxGeometry x="48" y="522" width="200" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend2" value="• Microservicios: Hexagonal (domain, app, infra)" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;align=left;spacingLeft=4;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="48" y="540" width="200" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend3" value="• Common: puertos y adaptadores compartidos" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;align=left;spacingLeft=4;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="48" y="558" width="200" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend4" value="• Entre servicios: IUserFinder, IPackageFinder + JWT" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;align=left;spacingLeft=4;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="48" y="576" width="200" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend5" value="• Backup: cron 1x/día → carpeta por fecha/hora" style="text;html=1;strokeColor=none;fillColor=none;fontSize=10;align=left;spacingLeft=4;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="48" y="594" width="200" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend6" value="Colores: verde=users, ámbar=packages,&#xa;lavanda=tracking, gris=common" style="text;html=1;strokeColor=none;fillColor=none;fontSize=9;align=left;spacingLeft=4;fontColor=#6c757d;" vertex="1" parent="1">
+          <mxGeometry x="48" y="618" width="200" height="32" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
