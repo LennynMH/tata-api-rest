@@ -73,7 +73,7 @@ services:
       RUN_MIGRATIONS: 'true'
       HEALTH_DB_TIMEOUT_MS: 1500
       JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30}
     ports:
       - '2001:2001'
     healthcheck:
@@ -109,7 +109,7 @@ services:
       HEALTH_DB_TIMEOUT_MS: 1500
       USERS_API_URL: http://users-api:2001
       JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30}
     ports:
       - '2002:2002'
 
@@ -135,7 +135,7 @@ services:
       PACKAGES_API_URL: http://packages-api:2002
       HEALTH_DB_TIMEOUT_MS: 1500
       JWT_SECRET: ${JWT_SECRET:-tata-logistics-7xK9mP2nQ5vR8wY1zB4cF6hJ0sL3uW7xA9dG2eI5kM8pS1tV4yZ6bN0oC}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30m}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-30}
     ports:
       - '2003:2003'
     healthcheck:

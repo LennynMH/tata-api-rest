@@ -38,7 +38,7 @@ import { DomainExceptionFilter } from '../../../../common/filters/domain-excepti
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('jwt.secret'),
-        signOptions: { expiresIn: config.get<string>('jwt.expiresIn') ?? '30m' },
+        signOptions: { expiresIn: config.get<number>('jwt.expiresInSeconds') },
       }),
       inject: [ConfigService],
     }),

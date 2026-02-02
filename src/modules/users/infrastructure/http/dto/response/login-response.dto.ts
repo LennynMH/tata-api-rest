@@ -4,7 +4,7 @@ export class LoginResponseDto {
   @ApiProperty({ description: 'JWT de acceso (Bearer token)' })
   access_token: string;
 
-  @ApiProperty({ example: '1h', description: 'Tiempo de validez del token' })
+  @ApiProperty({ example: '30m', description: 'Tiempo de validez del token (minutos)' })
   expires_in: string;
 
   @ApiProperty({ example: 'Bearer' })

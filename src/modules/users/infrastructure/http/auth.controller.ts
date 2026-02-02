@@ -35,12 +35,13 @@ export class AuthController {
       password: dto.password,
     });
 
-    const expiresIn = this.config.get<string>('jwt.expiresIn') ?? '30m';
-    const access_token = this.jwtService.sign(payload, { expiresIn });
+    const expiresInSeconds = this.config.get<number>('jwt.expiresInSeconds');
+    const expiresInMinutes = this.config.get<number>('jwt.expiresInMinutes');
+    const access_token = this.jwtService.sign(payload, { expiresIn: expiresInSeconds });
 
     return {
       access_token,
-      expires_in: expiresIn,
+      expires_in: `${expiresInMinutes}m`,
       token_type: 'Bearer',
       user,
     };
