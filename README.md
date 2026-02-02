@@ -2,6 +2,8 @@
 
 API REST para gestión de paquetes, usuarios y seguimiento de envíos logísticos.
 
+**Contenido:** [Lo implementado](#lo-implementado-hasta-el-momento) · [Quick Start](#quick-start-docker) · [Instalación](#instalación) · [Autenticación](#autenticación-hu-11) · [Endpoints](#endpoints) · [Tests](#tests) · [Documentación](#documentación-del-proyecto) · [Roadmap HUs](#historias-de-usuario-hu---seguimiento) · [Estructura](#estructura-del-proyecto-arquitectura-hexagonal) · [Estándares](#estándares-del-proyecto)
+
 ## Lo implementado hasta el momento
 
 - **11 historias de usuario (HU):** HU-01, HU-02 (usuarios), HU-03, HU-04, HU-05, HU-06 (paquetes), HU-07, HU-08 (seguimiento), HU-09 (backup BD), HU-10 (Docker), HU-11 (auth).
@@ -10,7 +12,8 @@ API REST para gestión de paquetes, usuarios y seguimiento de envíos logístico
 - **2 bases de datos:** PostgreSQL (usuarios y paquetes), MongoDB (eventos de seguimiento).
 - **Arquitectura hexagonal** por módulo; comunicación entre servicios vía HTTP (IUserFinder, IPackageFinder) con JWT reenviado.
 - **Migraciones TypeORM** secuenciales: roles → state_users → users → state_packages → packages → seed admin → seed usuario.
-- **Documentación:** Swagger por servicio, Postman por HU, README, roadmap y PROMPT-RESUMEN.
+- **Documentación:** Swagger por servicio, Postman por HU, README, roadmap (OPML + MD), diagramas de arquitectura y componentes.
+- **Tests BDD:** jest-cucumber por módulo en `test/features/` (users: Login, CreateUser, GetUser); ejecución por módulo con `npm run test:features:users`.
 
 ## Stack tecnológico
 
@@ -24,6 +27,7 @@ API REST para gestión de paquetes, usuarios y seguimiento de envíos logístico
 | **ORM**      | TypeORM (SQL), Mongoose (NoSQL - tracking) |
 | **Documentación** | Swagger/OpenAPI        |
 | **Contenedores** | Docker + Docker Compose |
+| **Tests** | Jest; BDD con jest-cucumber en `test/features/` (config: `jest-features.json`) |
 
 ## Requisitos previos
 
@@ -211,6 +215,15 @@ Swagger UI disponible por servicio:
 - **users-api:** http://localhost:2001/api/docs
 - **packages-api:** http://localhost:2002/api/docs
 - **tracking-api:** http://localhost:2003/api/docs
+
+## Documentación del proyecto
+
+| Documento | Descripción |
+|-----------|-------------|
+| [docs/roadmap-historias-usuario.opml](docs/roadmap-historias-usuario.opml) | Roadmap para importar en XMind |
+| [docs/MIGRACIONES.md](docs/MIGRACIONES.md) | Orden y detalle de migraciones TypeORM |
+| [docs/diagrama-arquitectura.drawio](docs/diagrama-arquitectura.drawio) | Diagrama de sistema (draw.io) |
+| [docs/diagrama-componentes.drawio](docs/diagrama-componentes.drawio) | Diagrama de componentes hexagonal (draw.io) |
 
 ## Endpoints
 
@@ -566,17 +579,27 @@ src/
 ## Tests
 
 ```bash
-# Tests unitarios
+# Tests unitarios (src/**/*.spec.ts)
 npm run test
 
 # Tests con cobertura
 npm run test:cov
+
+# Tests BDD (jest-cucumber) — todos los módulos
+npm run test:features
+
+# Tests BDD por módulo
+npm run test:features:users      # solo test/features/users/
+npm run test:features:packages   # solo test/features/packages/
+npm run test:features:tracking   # solo test/features/tracking/
 ```
+
+Los tests BDD viven en `test/features/<modulo>/` (`.feature` + `.steps.ts`). No requieren base de datos (repositorios mockeados). Ver [test/features/README.md](test/features/README.md).
 
 ## Historias de usuario (HU) - Seguimiento
 
-> **Roadmap para XMind:** Ver `docs/roadmap-historias-usuario.opml` o `docs/roadmap-historias-usuario.md`
-> - Importar en XMind: **File > Import** → seleccionar archivo `.opml`
+- **Roadmap (Markdown):** [docs/roadmap-historias-usuario.md](docs/roadmap-historias-usuario.md) — tabla de HUs, priorización y referencias.
+- **Roadmap (OPML, para XMind):** [docs/roadmap-historias-usuario.opml](docs/roadmap-historias-usuario.opml) — importar en XMind: **File > Import** → archivo `.opml`.
 
 ### Resumen de progreso
 
@@ -715,8 +738,9 @@ modules/{nombre}/
 | Estándar | Implementación |
 |----------|----------------|
 | **Framework** | Jest |
-| **Ubicación** | Archivo `.spec.ts` junto al código bajo prueba |
-| **Casos de uso** | Tests unitarios con mocks de repositorios |
+| **Unitarios** | Archivos `.spec.ts` (config en `package.json`) |
+| **BDD (features)** | jest-cucumber en `test/features/<modulo>/`: archivos `.feature` (Gherkin) y `.steps.ts`; config en `jest-features.json` (raíz). Ejecución: `npm run test:features` o `npm run test:features:users` (por módulo). |
+| **App de test** | NestJS `Test.createTestingModule` con repositorios mockeados (sin BD). |
 | **Patrón AAA** | Arrange, Act, Assert |
 | **Nombres** | Descripción en español (`debe crear un usuario correctamente`) |
 
