@@ -1,3 +1,5 @@
 node_modules
 dist
 .env
+# dumps de backup (cron-database)
+cron-database/backup/

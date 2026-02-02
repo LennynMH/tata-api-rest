@@ -5,6 +5,7 @@
 # Bases de datos:
 # - PostgreSQL (SQL): usuarios, paquetes (HU-01 a HU-06)
 # - MongoDB (NoSQL): seguimiento de paquetes (HU-07, HU-08)
+# - backup-data: salida de backups (cron-backup), organizada por fecha YYYY-MM-DD
 
 services:
   # ============================================
@@ -144,6 +145,36 @@ services:
       timeout: 3s
       retries: 10
       start_period: 20s
+
+  # ============================================
+  # Backup automático de bases de datos (cron, 1x/día)
+  # Salida en ./cron-database/backup/YYYY-MM-DD-HHMM/postgres y .../mongodb
+  # ============================================
+  cron-database:
+    build:
+      context: ./cron-database
+      dockerfile: Dockerfile
+    container_name: logistics_cron_database
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    environment:
+      BACKUP_CRON: ${BACKUP_CRON:-0 2 * * *}
+      TZ: ${TZ:-America/Lima}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      BACKUP_POSTGRES_ENABLED: ${BACKUP_POSTGRES_ENABLED:-true}
+      BACKUP_MONGO_ENABLED: ${BACKUP_MONGO_ENABLED:-true}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: logistics_db
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017/tracking_db?authSource=admin
+    volumes:
+      - ./cron-database/backup:/backup-data
 
 volumes:
   postgres_data:
