@@ -23,6 +23,8 @@ import { IPackageFinder, PACKAGE_FINDER } from '../../../../common/contracts/pac
 import { JwtAuthGuard } from '../../../../common/auth/jwt-auth.guard';
 import { RequestUser } from '../../../../common/auth/jwt.strategy';
 import { PackageNotFoundException } from '../../../../common/exceptions/package-not-found.exception';
+import { ROLE_CODE_ADM } from '../../../../common/constants/role.constants';
+import { AUTHORIZATION_HEADER } from '../../../../common/constants/http.constants';
 
 @ApiTags('tracking')
 @ApiBearerAuth('JWT')
@@ -54,7 +56,7 @@ export class TrackingController {
         throw new ForbiddenException('No tiene permiso para acceder a este paquete');
       }
     }
-    if ('ownerId' in result && result.ownerId !== user.id && user.role !== 'ADM') {
+    if ('ownerId' in result && result.ownerId !== user.id && user.role !== ROLE_CODE_ADM) {
       throw new ForbiddenException('No tiene permiso para acceder a este paquete');
     }
   }
@@ -77,7 +79,7 @@ export class TrackingController {
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   async registerEvent(
     @Req() req: { user: RequestUser },
-    @Headers('authorization') authHeader: string,
+    @Headers(AUTHORIZATION_HEADER) authHeader: string,
     @Param('packageId') packageId: string,
     @Body() dto: RegisterTrackingEventDto,
   ): Promise<TrackingEventResponseDto> {
@@ -119,7 +121,7 @@ export class TrackingController {
   @ApiResponse({ status: 404, description: 'Paquete no encontrado (PKG001)' })
   async getHistory(
     @Req() req: { user: RequestUser },
-    @Headers('authorization') authHeader: string,
+    @Headers(AUTHORIZATION_HEADER) authHeader: string,
     @Param('packageId') packageId: string,
   ): Promise<TrackingHistoryResponseDto> {
     await this.verifyPackageOwnership(packageId, authHeader ?? '', req.user);

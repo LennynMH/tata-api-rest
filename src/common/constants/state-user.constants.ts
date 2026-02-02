@@ -1,4 +1,3 @@
-
 export const STATE_USER_CODE_ACTIVE = 'ACT' as const;
 export const STATE_USER_CODE_INACTIVE = 'INA' as const;
 

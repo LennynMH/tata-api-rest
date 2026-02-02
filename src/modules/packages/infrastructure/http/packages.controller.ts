@@ -22,6 +22,8 @@ import { PackageResponseDto } from './dto/response/package-response.dto';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
 import { JwtAuthGuard } from '../../../../common/auth/jwt-auth.guard';
 import { RequestUser } from '../../../../common/auth/jwt.strategy';
+import { ROLE_CODE_ADM } from '../../../../common/constants/role.constants';
+import { AUTHORIZATION_HEADER } from '../../../../common/constants/http.constants';
 
 @ApiTags('packages')
 @ApiBearerAuth('JWT')
@@ -48,7 +50,7 @@ export class PackagesController {
   @ApiResponse({ status: 409, description: 'Número de seguimiento duplicado' })
   async create(
     @Req() req: { user: RequestUser },
-    @Headers('authorization') authHeader: string,
+    @Headers(AUTHORIZATION_HEADER) authHeader: string,
     @Body() dto: CreatePackageDto,
   ) {
     const userId = req.user.id;
@@ -86,7 +88,7 @@ export class PackagesController {
   async findById(@Req() req: { user: RequestUser }, @Param('id') id: string) {
     this.logger.log(`GET /packages/${id}`);
     const pkg = await this.getPackageByIdUseCase.execute(id);
-    if (pkg.userId !== req.user.id && req.user.role !== 'ADM') {
+    if (pkg.userId !== req.user.id && req.user.role !== ROLE_CODE_ADM) {
       throw new ForbiddenException('No tiene permiso para consultar este paquete');
     }
     return PackageResponseDto.fromDomain(pkg);
@@ -106,7 +108,7 @@ export class PackagesController {
     @Body() dto: UpdatePackageStatusDto,
   ) {
     const pkg = await this.getPackageByIdUseCase.execute(id);
-    if (pkg.userId !== req.user.id && req.user.role !== 'ADM') {
+    if (pkg.userId !== req.user.id && req.user.role !== ROLE_CODE_ADM) {
       throw new ForbiddenException('No tiene permiso para actualizar este paquete');
     }
     this.logger.log(`PATCH /packages/${id} - status=${dto.status}`);

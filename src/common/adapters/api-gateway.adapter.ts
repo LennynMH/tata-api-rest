@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosRequestConfig } from 'axios';
 import { IApiGateway, RequestApiGatewayDto } from '../contracts/api-gateway.contract';
+import { DEFAULT_HTTP_TIMEOUT_MS } from '../constants/http.constants';
 
 @Injectable()
 export class ApiGatewayAdapter implements IApiGateway {
   async invokeEndpoint<R>(request: RequestApiGatewayDto): Promise<R> {
-    const { host, path, method, data, headers = {}, timeoutMs = 5000 } = request;
+    const { host, path, method, data, headers = {}, timeoutMs = DEFAULT_HTTP_TIMEOUT_MS } = request;
 
     const url = path.startsWith('http') ? path : `${host}${path}`;
 

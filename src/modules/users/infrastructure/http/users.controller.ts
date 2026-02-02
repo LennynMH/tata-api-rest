@@ -17,6 +17,7 @@ import { UserResponseDto } from './dto/response/user-response.dto';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
 import { JwtAuthGuard } from '../../../../common/auth/jwt-auth.guard';
 import { RequestUser } from '../../../../common/auth/jwt.strategy';
+import { ROLE_CODE_ADM, ROLE_CODE_USU } from '../../../../common/constants/role.constants';
 
 @ApiTags('users')
 @ApiBearerAuth('JWT')
@@ -40,10 +41,10 @@ export class UsersController {
   @ApiResponse({ status: 403, description: 'Solo administradores pueden crear usuarios' })
   @ApiResponse({ status: 409, description: 'Email ya registrado' })
   async create(@Req() req: { user: RequestUser }, @Body() dto: CreateUserDto) {
-    if (req.user.role !== 'ADM') {
+    if (req.user.role !== ROLE_CODE_ADM) {
       throw new ForbiddenException('Solo administradores pueden crear usuarios');
     }
-    this.logger.log(`POST /users - request: email=${dto.email}, role_cod=${dto.role_cod ?? 'USU'}`);
+    this.logger.log(`POST /users - request: email=${dto.email}, role_cod=${dto.role_cod ?? ROLE_CODE_USU}`);
     const user = await this.createUserUseCase.execute({
       email: dto.email,
       password: dto.password,
@@ -62,7 +63,7 @@ export class UsersController {
   @ApiResponse({ status: 403, description: 'Solo puede consultar su propio perfil' })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async findById(@Req() req: { user: RequestUser }, @Param('id') id: string) {
-    if (req.user.id !== id && req.user.role !== 'ADM') {
+    if (req.user.id !== id && req.user.role !== ROLE_CODE_ADM) {
       throw new ForbiddenException('Solo puede consultar su propio perfil');
     }
     this.logger.log(`GET /users/${id}`);

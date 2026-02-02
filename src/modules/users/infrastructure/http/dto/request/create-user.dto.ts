@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { ROLE_CODE_USU } from '../../../../../../common/constants/role.constants';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'usuario@ejemplo.com' })
@@ -16,7 +17,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyOptional({ example: 'USU', description: 'Código del rol (ADM o USU)' })
+  @ApiPropertyOptional({ example: ROLE_CODE_USU, description: 'Código del rol (ADM o USU)' })
   @IsOptional()
   @IsString()
   role_cod?: string;

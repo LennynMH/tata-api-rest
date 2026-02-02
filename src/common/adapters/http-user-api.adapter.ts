@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { IApiGateway, API_GATEWAY } from '../contracts/api-gateway.contract';
 import { IUserFinder, UserFinderResult } from '../contracts/user-finder.contract';
 import { UserApiResponse } from '../contracts/user-api.contract';
+import { AUTHORIZATION_HEADER, DEFAULT_HTTP_TIMEOUT_MS } from '../constants/http.constants';
 
 @Injectable()
 export class HttpUserApiAdapter implements IUserFinder {
@@ -16,13 +17,13 @@ export class HttpUserApiAdapter implements IUserFinder {
     const baseUrl = this.config.get<string>('usersApiUrl', 'http://localhost:2001');
     try {
       const headers: Record<string, string> = {};
-      if (authHeader) headers['Authorization'] = authHeader;
+      if (authHeader) headers[AUTHORIZATION_HEADER] = authHeader;
       const response = await this.apiGateway.invokeEndpoint<UserApiResponse>({
         host: baseUrl,
         path: `/api/users/${id}`,
         method: 'GET',
         headers: Object.keys(headers).length ? headers : undefined,
-        timeoutMs: 5000,
+        timeoutMs: DEFAULT_HTTP_TIMEOUT_MS,
       });
       return {
         id: response.id,

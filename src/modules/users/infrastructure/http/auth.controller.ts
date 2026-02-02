@@ -6,6 +6,7 @@ import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from './dto/request/login.dto';
 import { LoginResponseDto } from './dto/response/login-response.dto';
 import { ILoggerFactory, LOGGER_FACTORY } from '../../../../common/contracts/logger.contract';
+import { TOKEN_TYPE_BEARER } from '../../../../common/constants/auth.constants';
 
 
 @ApiTags('auth')
@@ -42,7 +43,7 @@ export class AuthController {
     return {
       access_token,
       expires_in: `${expiresInMinutes}m`,
-      token_type: 'Bearer',
+      token_type: TOKEN_TYPE_BEARER,
       user,
     };
   }

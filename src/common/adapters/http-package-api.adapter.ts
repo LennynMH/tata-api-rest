@@ -6,6 +6,7 @@ import {
 } from '../contracts/package-finder.contract';
 import { IApiGateway, API_GATEWAY } from '../contracts/api-gateway.contract';
 import { ILoggerFactory, LOGGER_FACTORY } from '../contracts/logger.contract';
+import { AUTHORIZATION_HEADER } from '../constants/http.constants';
 
 @Injectable()
 export class HttpPackageApiAdapter implements IPackageFinder {
@@ -61,7 +62,7 @@ export class HttpPackageApiAdapter implements IPackageFinder {
         host: this.baseUrl,
         path: `/api/packages/${packageId}`,
         method: 'GET',
-        headers: { Authorization: authHeader },
+        headers: { [AUTHORIZATION_HEADER]: authHeader },
       });
       const ownerId = response?.user_id;
       if (ownerId) {

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../../../domain/entities/user.entity';
+import { STATE_USER_CODE_ACTIVE } from '../../../../../../common/constants/state-user.constants';
 
 export class UserResponseDto {
   @ApiProperty()
@@ -18,7 +19,7 @@ export class UserResponseDto {
     name: string;
   };
 
-  @ApiProperty({ description: 'Estado del usuario (HU-02)', example: { id: 'uuid', codigo: 'ACT', descripcion: 'Activo' } })
+  @ApiProperty({ description: 'Estado del usuario (HU-02)', example: { id: 'uuid', codigo: STATE_USER_CODE_ACTIVE, descripcion: 'Activo' } })
   state: {
     id: string;
     codigo: string;
@@ -49,7 +50,7 @@ export class UserResponseDto {
         codigo: user.state.code,
         descripcion: user.state.description,
       },
-      isActive: user.state.code === 'ACT',
+      isActive: user.state.code === STATE_USER_CODE_ACTIVE,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
